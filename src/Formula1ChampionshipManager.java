@@ -97,7 +97,6 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
 //        {
 //
 //        }
-//
 //        drivers.add(new Formula1Driver(driverName, driverLocation, TeamNames[SelectedTeam]));
     }
 
