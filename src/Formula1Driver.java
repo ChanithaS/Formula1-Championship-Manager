@@ -7,8 +7,8 @@ public class Formula1Driver extends Driver{
 
     private int[] noOfPoints = {25, 18, 15, 12, 10, 8, 6, 4, 2, 1};
 
-    public Formula1Driver(String name, String location, String team) {
-        super(name, location, team);
+    public Formula1Driver(String name, String location, String team, int age) {
+        super(name, location, team, age);
     }
 
     public int getFirstPlace() {
