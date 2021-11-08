@@ -197,7 +197,25 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
             System.out.format(AlignFormat,"["+ i +"]",drivers.get(i).getName(), drivers.get(i).getTeam());
         }
 
-        System.out.println("Select a driver to delete");
+        integerValidation("Select a driver number to delete");
+
+        boolean validDriverNumber = false;
+        while (!validDriverNumber)
+        {
+            if (value > drivers.size() || value < 0){
+                integerValidation("Please enter a valid number ");
+            }
+            else {
+                System.out.println("Driver " + drivers.get(value).getName() + "was deleted successfully");
+                drivers.remove(value);
+                validDriverNumber = true;
+            }
+        }
+        menu();
+    }
+
+    @Override
+    public void ChangeTheTeam() {
 
     }
 

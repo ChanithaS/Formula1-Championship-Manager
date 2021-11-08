@@ -1,5 +1,6 @@
 public interface ChampionshipManager {
-    public void menu();
-    public void CreateDriver();
-    public void DeleteDriver();
+    void menu();
+    void CreateDriver();
+    void DeleteDriver();
+    void ChangeTheTeam();
 }
