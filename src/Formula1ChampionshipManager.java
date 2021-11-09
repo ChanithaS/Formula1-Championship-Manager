@@ -85,7 +85,7 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
     public void CreateDriver(){
 
         //Getting the player name --------------------------------------------------------------------------------------
-        System.out.println("Please enter the player name (ex: Dohn joe)");
+        System.out.println("Please enter the player name (ex: Don joe)");
         String driverName = sc1.next();
 
         //getting the player location in ISO format --------------------------------------------------------------------
@@ -209,77 +209,160 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
 
     @Override
     public void AddRace() {
-        System.out.println("To add a single race stats enter S/s  || To add multiple race data to a player enter M/m");
+        System.out.println("To add a single race stats enter S/s  || To add multiple race data to a player enter M/m || To Quit enter Q/q ");
         System.out.print("|                                     : ");
         String addType = sc.next();
 
         boolean raceInput = false;
-        while(!raceInput)
-        {
-            if (addType.equals("S") || addType.equals("s"))
-            {
-                String AlignFormat = "| %-15s |%n";
-                System.out.format("+-----------------+------+%n");
-                System.out.format("|      Dates added       |%n");
-                System.out.format("+-----------------+------+%n");
-
-                if (!dates.isEmpty())
-                {
-
-                    for (String datesAdded : dates) {
-                        System.out.format(AlignFormat, datesAdded);
-                    }
-                }
-                else {
-                    System.out.format(AlignFormat, "Empty");
-                }
-
-                System.out.println("Enter the race date in format(dd/MM/yyyy) : ");
-                String date = sc.next();
-                //Set up date format
-                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-
-                boolean dateValid = false;
-                while (!dateValid)
-                {
-                    try
-                    {
-                        dateFormat.parse(date);
-                        dateValid = true;
-                    }
-                    /* Date format is invalid */
-                    catch (ParseException e)
-                    {
-                        System.out.println(date+" is Invalid Date format, Please enter a valid date :");
-                        date = sc.next();
-                    }
-                }
-                dates.add(date);
-
-                System.out.println("Enter the positions players has won in the race (eg: 1, 2, 3 ...)");
-                System.out.println("If not participated or no position was obtained, Please enter a 0 ");
-
-                for (Formula1Driver driver : drivers) {
-                    integerValidation("Enter the position of the driver " + driver.getName() + " obtained in the race : ");
-
-                        driver.setFirstPlace(1);
-                }
+        while(!raceInput) {
+            if (addType.equals("S") || addType.equals("s")) {
 
                 raceInput = true;
+                SingleRace();
+                While("Races", 1);
             }
             else if (addType.equals("M") || addType.equals("m"))
             {
                 raceInput = true;
+                MultipleRaces();
+                While("Player", 2);
+
             }
-            else {
+            else if (addType.equals("Q") || addType.equals("q"))
+            {
+                raceInput = true;
+                menu();
+            }
+            else
+            {
                 System.out.println("|              Input not valid enter a valid input:                |");
                 System.out.print("|                            : ");
                 addType = sc.next();
             }
         }
+    }
 
+    private void While(String what, int SorM)
+    {
+        System.out.println("To add another " +what+" enter Y/y, to exit enter Q/q : ");
+        String addAgain = sc.next();
+        boolean again = false;
+        while (!again) {
+            if (addAgain.equals("Y") || addAgain.equals("y")) {
+                if (SorM == 1)
+                {
+                    SingleRace();
+                }
+                else if (SorM == 2)
+                {
+                    MultipleRaces();
+                }
+                System.out.println("To add another" +what+ " enter Y/y, to go back to previous menu enter Q/q : ");
+                addAgain = sc.next();
+            }
+            else if (addAgain.equals("Q") || addAgain.equals("q"))
+            {
+                //raceInput = true;
+                again = true;
+                AddRace();
+            }
+            else {
+                System.out.println("Please enter a valid input : ");
+                addAgain = sc.next();
+            }
+        }
+    }
+    public void SingleRace()
+    {
+        String AlignFormat = "| %-15s |%n";
+        System.out.format("+-----------------+------+%n");
+        System.out.format("|      Dates added       |%n");
+        System.out.format("+-----------------+------+%n");
 
+        if (!dates.isEmpty()) {
 
+            for (String datesAdded : dates) {
+                System.out.format(AlignFormat, datesAdded);
+            }
+        } else {
+            System.out.format(AlignFormat, "Empty");
+        }
+
+        System.out.println("Enter the race date in format(dd/MM/yyyy) : ");
+        String date = sc.next();
+        //Set up date format
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+
+        boolean dateValid = false;
+        while (!dateValid) {
+            try {
+                dateFormat.parse(date);
+                dateValid = true;
+            }
+            /* Date format is invalid */ catch (ParseException e) {
+                System.out.println(date + " is Invalid Date format, Please enter a valid date :");
+                date = sc.next();
+            }
+        }
+        dates.add(date);
+
+        System.out.println("|-------------------------------------------------------------------|");
+        System.out.println("| Enter the positions players has won in the race (eg: 1, 2, 3 ...) |");
+        System.out.println("| If not participated or no position was obtained, Please enter a 0 |");
+        System.out.println("|-------------------------------------------------------------------|");
+
+        for (Formula1Driver driver : drivers) {
+            driver.setNoOfRaces(1);
+            integerValidation("Enter the position of the driver " + driver.getName() + " obtained in the race : ");
+            if (value == 1) {
+                driver.setFirstPlace(1);
+                driver.setPoints(noOfPoints[0]);
+            } else if (value == 2) {
+                driver.setSecondPlace(1);
+                driver.setPoints(noOfPoints[1]);
+            } else if (value == 3) {
+                driver.setThirdPlace(1);
+                driver.setPoints(noOfPoints[2]);
+            } else if (value > 3 && value <= 9) {
+                driver.setPoints(noOfPoints[value - 1]);
+            }
+        }
+    }
+
+    public void MultipleRaces(){
+        ShowDriverTable();
+        integerValidation("Select a driver to add data : ");
+        TableInputValidator("Please enter a valid number ");
+
+        int selectedDriver = value;
+        integerValidation("Enter the no of 1st Places obtained by " + drivers.get(selectedDriver).getName() + " :");
+        drivers.get(selectedDriver).setFirstPlace(value);
+        int place1 = value;
+        integerValidation("Enter the no of 2nd Places obtained by " + drivers.get(selectedDriver).getName() + " :");
+        drivers.get(selectedDriver).setSecondPlace(value);
+        int place2 = value;
+        integerValidation("Enter the no of 3rd Places obtained by " + drivers.get(selectedDriver).getName() + " :");
+        drivers.get(selectedDriver).setThirdPlace(value);
+        int place3 = value;
+        integerValidation("Enter the no of Races participated by " + drivers.get(selectedDriver).getName() + " :");
+        drivers.get(selectedDriver).setNoOfRaces(value);
+        integerValidation("Enter the Total no of Points obtained by " + drivers.get(selectedDriver).getName() + " :");
+
+        int total = place1 * noOfPoints[0] + place2 * noOfPoints[1] + place3 * noOfPoints[2];
+        boolean validTotal = false;
+        while (!validTotal)
+        {
+            if (value < total) {
+                System.out.println("Total no.of Points entered doesnt match with positions/race count total");
+                integerValidation("Please enter a valid Total no.of points : ");
+            }
+            else {
+                validTotal = true;
+            }
+        }
+        drivers.get(selectedDriver).setPoints(value);
+
+        System.out.println("Data added successfully");
     }
 
     public void ShowDriverTable() {
@@ -330,29 +413,6 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
         }
     }
 
-    public static boolean dateValidation(String inputDate)
-    {
-        //Set up date format
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        //dateFormat.setLenient(false);
-        /* Create Date object
-         * parse the string into date
-         */
-        try
-        {
-            dateFormat.parse(inputDate);
-            System.out.println(inputDate+" is valid date format");
-        }
-        /* Date format is invalid */
-        catch (ParseException e)
-        {
-            System.out.println(inputDate+" is Invalid Date format");
-            return false;
-        }
-        /* Return true if date format is valid */
-        return true;
-    }
-
     public void integerValidation(String test)
     {
         System.out.print(test);
@@ -372,4 +432,27 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
 //            }
 //        }
 //        System.out.println(Arrays.toString(TeamNames.toArray()));
+
+//    public static boolean dateValidation(String inputDate)
+//    {
+//        //Set up date format
+//        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+//        //dateFormat.setLenient(false);
+//        /* Create Date object
+//         * parse the string into date
+//         */
+//        try
+//        {
+//            dateFormat.parse(inputDate);
+//            System.out.println(inputDate+" is valid date format");
+//        }
+//        /* Date format is invalid */
+//        catch (ParseException e)
+//        {
+//            System.out.println(inputDate+" is Invalid Date format");
+//            return false;
+//        }
+//        /* Return true if date format is valid */
+//        return true;
+//    }
 

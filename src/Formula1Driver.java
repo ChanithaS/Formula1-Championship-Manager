@@ -5,8 +5,6 @@ public class Formula1Driver extends Driver{
     private int noOfRaces;
     private int Points;
 
-    private int[] noOfPoints = {25, 18, 15, 12, 10, 8, 6, 4, 2, 1};
-
     public Formula1Driver(String name, String location, String team, int age) {
         super(name, location, team, age);
     }
@@ -24,7 +22,7 @@ public class Formula1Driver extends Driver{
     }
 
     public void setSecondPlace(int secondPlace) {
-        this.secondPlace = secondPlace;
+        this.secondPlace += secondPlace;
     }
 
     public int getThirdPlace() {
@@ -32,7 +30,7 @@ public class Formula1Driver extends Driver{
     }
 
     public void setThirdPlace(int thirdPlace) {
-        this.thirdPlace = thirdPlace;
+        this.thirdPlace += thirdPlace;
     }
 
     public int getNoOfRaces() {
@@ -40,7 +38,7 @@ public class Formula1Driver extends Driver{
     }
 
     public void setNoOfRaces(int noOfRaces) {
-        this.noOfRaces = noOfRaces;
+        this.noOfRaces += noOfRaces;
     }
 
     public int getPoints() {
@@ -48,6 +46,6 @@ public class Formula1Driver extends Driver{
     }
 
     public void setPoints(int points) {
-        Points = points;
+        Points += points;
     }
 }
