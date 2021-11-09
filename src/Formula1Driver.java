@@ -16,7 +16,7 @@ public class Formula1Driver extends Driver{
     }
 
     public void setFirstPlace(int firstPlace) {
-        this.firstPlace = firstPlace;
+        this.firstPlace += firstPlace;
     }
 
     public int getSecondPlace() {

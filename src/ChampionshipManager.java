@@ -3,4 +3,5 @@ public interface ChampionshipManager {
     void CreateDriver();
     void DeleteDriver();
     void ChangeTheTeam();
+    void AddRace();
 }
