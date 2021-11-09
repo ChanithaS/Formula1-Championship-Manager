@@ -26,18 +26,24 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
 
     @Override
     public void menu() {
-        String menu = "||         Welcome to Formula1 Championship        ||\n"
-                .concat("<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>\n")
-                .concat("<> [1]. Create a New Driver                      <>\n")
-                .concat("<> [2]. Delete a Driver                          <>\n")
-                .concat("<> [3]. -------------                            <>\n")
-                .concat("<> [4]. Change the Team                          <>\n")
-                .concat("<> [5]. Display Statistics                       <>\n")
-                .concat("<> [6]. Add Race                                 <>\n")
-                .concat("<> [99]. Exit the Program                        <>\n")
-                .concat("<>               Choose an Option                <>\n")
-                .concat("<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+        String menu = "\n" +
+                "█████████████████████████████████████████████████████████████████████████\n" +
+                "█▄─█▀▀▀█─▄█▄─▄▄─█▄─▄███─▄▄▄─█─▄▄─█▄─▀█▀─▄█▄─▄▄─███─▄─▄─█─▄▄─███▄─▄▄─█▀ ██\n" +
+                "██─█─█─█─███─▄█▀██─██▀█─███▀█─██─██─█▄█─███─▄█▀█████─███─██─████─▄████ ██\n" +
+                "▀▀▄▄▄▀▄▄▄▀▀▄▄▄▄▄▀▄▄▄▄▄▀▄▄▄▄▄▀▄▄▄▄▀▄▄▄▀▄▄▄▀▄▄▄▄▄▀▀▀▀▄▄▄▀▀▄▄▄▄▀▀▀▄▄▄▀▀▀▄▄▄▀\n"
+                .concat("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n")
+                .concat("|                      [1] . Create a New Driver                        |\n")
+                .concat("|                      [2] . Delete a Driver                            |\n")
+                .concat("|                      [3] . Change the Team                            |\n")
+                .concat("|                      [4] . Display Driver Statistics                  |\n")
+                .concat("|                      [5] . Display Formula 1 Driver Table             |\n")
+                .concat("|                      [6] . Add Race                                   |\n")
+                .concat("|                      [99]. Exit the Program                           |\n")
+                .concat("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n")
+                .concat("|                            Choose an Option                           |\n")
+                .concat("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
         System.out.println(menu);
+        System.out.print("                             : ");
         String mainMenuInput = sc.next();
         MenuChoices(mainMenuInput);
     }
@@ -49,21 +55,53 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
                 CreateDriver();
                 break;
             case "2":
-                DeleteDriver();
+                if (drivers.isEmpty())
+                {
+                    System.out.println("|                Please add a driver to Delete a driver                 |");
+                    menu();
+                    break;
+                }
+                else {
+                    DeleteDriver();
+                }
                 break;
             case "3":
-                //sas
+                if (drivers.size() >= 2)
+                {
+                    ChangeTheTeam();
+                }
+                else {
+                    System.out.println("|           Please add two or more drivers to change the team           |");
+                    menu();
+                    break;
+                }
                 break;
             case "4":
-                ChangeTheTeam();
+                if (drivers.isEmpty())
+                {
+                    System.out.println("|           Please add a driver to Display Driver Statistics            |");
+                    menu();
+                    break;
+                }
+                else {
+                    DeleteDriver();
+                }
                 break;
             case "5":
-                //saggygg
+                if (drivers.isEmpty())
+                {
+                    System.out.println("|            Please add a driver to Display F1 Driver Table             |");
+                    menu();
+                    break;
+                }
+                else {
+                    DeleteDriver();
+                }
                 break;
             case "6":
                 if (drivers.isEmpty())
                 {
-                    System.out.println("Please add a driver to add races");
+                    System.out.println("|                   Please add a driver to add races                    |");
                     menu();
                     break;
                 }
@@ -85,11 +123,13 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
     public void CreateDriver(){
 
         //Getting the player name --------------------------------------------------------------------------------------
-        System.out.println("Please enter the player name (ex: Don joe)");
+        System.out.println("|              Please enter the player name (ex: Don joe)               |");
+        System.out.print("                             : ");
         String driverName = sc1.next();
 
         //getting the player location in ISO format --------------------------------------------------------------------
-        System.out.println("Please enter the player Location (ex: Sri Lanka = LKA )");
+        System.out.println("|        Please enter the player Location (ex: Sri Lanka = LKA )        |");
+        System.out.print("                             : ");
         String driverLocation = sc1.next();
         //validating the location to 3 letters and only alphabetical letters
         boolean validLocation = false;
@@ -100,33 +140,33 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
                 validLocation = true;
             }
             else{
-                System.out.println("|   Please enter a valid location   |");
-                System.out.print("|                            : ");
+                System.out.println("|                     Please enter a valid location                     |");
+                System.out.print("                             : ");
                 driverLocation = sc1.next();
             }
         }
 
         //getting the player age ---------------------------------------------------------------------------------------
-        integerValidation("Please enter the player Age");
+        integerValidation("|                      Please enter the player Age                      |");
         int driverAge = 0;
         //validating using integerValidator. Also checks if greater than 18
         boolean validAge = false;
         while(!validAge) {
-            if (value > 18) {
+            if (value > 18 && value < 60) {
                 driverAge = value;
                 validAge = true;
             }
             else {
-                integerValidation("Please enter an age above 18");
+                integerValidation("|                Please enter an age above 18 and below 60                |");
             }
         }
 
         //getting player team ------------------------------------------------------------------------------------------
         //printing teams table for better user experience
-        String AlignFormat = "| %-15s | %-15s |%n";
-        System.out.format("+-----------------+------+%n");
-        System.out.format("|     Current Teams     |    List of teams available   |%n");
-        System.out.format("+-----------------+------+%n");
+        String AlignFormat = "     | %-27s | %-29s |%n";
+        System.out.format("     +-----------------------------+-------------------------------+%n");
+        System.out.format("     |        Current Teams        |    List of teams available    |     %n");
+        System.out.format("     +-----------------------------+-------------------------------+%n");
 
         //checking if list is empty
         if(drivers.isEmpty())
@@ -154,10 +194,30 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
                 }
             }
         }
-        System.out.format("+-----------------+------+%n");
+        System.out.format("     +-----------------------------+-------------------------------+%n");
 
         //getting the input for team name
-        TeamNameInputValidator();
+        System.out.println("|         Enter the player Team from the chart or any new team          |");
+        System.out.print("                             : ");
+        driverTeam = sc1.next();
+
+        //checking if the team already exits. if present getting the user input again
+        if (!drivers.isEmpty()){
+            boolean validTeam = false;
+            while (!validTeam)
+            {
+                for (Formula1Driver driver : drivers) {
+                    if (driver.getTeam().equalsIgnoreCase(driverTeam)) {
+                        System.out.println("|          The team already exists, Please enter another team           |");
+                        System.out.print("                             : ");
+                        driverTeam = sc1.next();
+                    }
+                    else {
+                        validTeam = true;
+                    }
+                }
+            }
+        }
 
         //this removes the team entered from the list and will not recommend that team again
         //removeIf function will represent a boolean-valued function of one argument and value -> value will go through all elements of the list
@@ -173,10 +233,10 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
     public void DeleteDriver() {
 
         ShowDriverTable();
-        integerValidation("Select a driver number to delete");
-        TableInputValidator("Please enter a valid number ");
+        integerValidation("|                   Select a driver number to delete                    |");
+        TableInputValidator("|                     Please enter a valid number                       |");
 
-        System.out.println("Driver " + drivers.get(value).getName() + "was deleted successfully");
+        System.out.println("|              Driver " + drivers.get(value).getName() + "was deleted successfully");
         TeamNames.add(drivers.get(value).getTeam());
         drivers.remove(value);
 
@@ -186,22 +246,41 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
     @Override
     public void ChangeTheTeam() {
         ShowDriverTable();
-        integerValidation("Select a driver number to change the team");
-        TableInputValidator("Please enter a valid number ");
 
+        integerValidation("|                   Select a driver number to change the team                    |");
+        TableInputValidator("Please enter a valid number ");
         int selectedDriver = value;
+        String previousTeam = drivers.get(selectedDriver).getTeam();
+        drivers.get(selectedDriver).setTeam("-");
 
         String AlignFormat = "| %-15s |%n";
         System.out.format("+-----------------+------+%n");
         System.out.format("|     Teams Available     |%n");
         System.out.format("+-----------------+------+%n");
-        for (String teamName : TeamNames) {
-            System.out.format(AlignFormat, teamName);
+        for (Formula1Driver driver : drivers) {
+            System.out.format(AlignFormat, driver.getTeam());
         }
-        TeamNameInputValidator();
+        integerValidation("|                   Select a team number to change the team with                    |");
+        TableInputValidator("Please enter a valid number ");
+        int selectedTeam = value;
 
-        TeamNames.add(drivers.get(selectedDriver).getTeam());
-        drivers.get(selectedDriver).setTeam(driverTeam);
+        boolean sameNo = false;
+        while (!sameNo) {
+            if (selectedTeam == selectedDriver)
+            {
+                integerValidation("|                   Please select a different Team                    |");
+                TableInputValidator("Please enter a valid number ");
+                selectedTeam = value;
+            }
+            else {
+                sameNo = true;
+            }
+        }
+
+        drivers.get(selectedDriver).setTeam(drivers.get(selectedTeam).getTeam());
+        drivers.get(selectedTeam).setTeam(previousTeam);
+
+        System.out.println("Team changed successfully");
 
         menu();
 
@@ -390,36 +469,14 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
         }
     }
 
-    private void TeamNameInputValidator() {
-        //getting the input for team name
-        System.out.println("Enter the player Team from the chart or any new team: ");
-        driverTeam = sc1.next();
-
-        //checking if the team already exits. if present getting the user input again
-        if (!drivers.isEmpty()){
-            boolean validTeam = false;
-            while (!validTeam)
-            {
-                for (Formula1Driver driver : drivers) {
-                    if (driver.getTeam().equalsIgnoreCase(driverTeam)) {
-                        System.out.println("The team already exists, Please enter another team");
-                        driverTeam = sc1.next();
-                    }
-                    else {
-                        validTeam = true;
-                    }
-                }
-            }
-        }
-    }
-
     public void integerValidation(String test)
     {
         System.out.print(test);
+        System.out.print("                             : ");
         while (!sc.hasNextInt()) {
             //this will check for integers
-            System.out.println("|                     Please enter a number                        |");
-            System.out.print("|                            : ");
+            System.out.println("|                       Please enter a number                           |");
+            System.out.print("                             : ");
             sc.next();
         }
         value = sc.nextInt();
