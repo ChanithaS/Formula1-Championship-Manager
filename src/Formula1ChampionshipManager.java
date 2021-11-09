@@ -43,7 +43,7 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
                 .concat("|                            Choose an Option                           |\n")
                 .concat("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
         System.out.println(menu);
-        System.out.print("                             : ");
+        System.out.print("|                             : ");
         String mainMenuInput = sc.next();
         MenuChoices(mainMenuInput);
     }
@@ -124,12 +124,12 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
 
         //Getting the player name --------------------------------------------------------------------------------------
         System.out.println("|              Please enter the player name (ex: Don joe)               |");
-        System.out.print("                             : ");
+        System.out.print("|                             : ");
         String driverName = sc1.next();
 
         //getting the player location in ISO format --------------------------------------------------------------------
         System.out.println("|        Please enter the player Location (ex: Sri Lanka = LKA )        |");
-        System.out.print("                             : ");
+        System.out.print("|                             : ");
         String driverLocation = sc1.next();
         //validating the location to 3 letters and only alphabetical letters
         boolean validLocation = false;
@@ -141,7 +141,7 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
             }
             else{
                 System.out.println("|                     Please enter a valid location                     |");
-                System.out.print("                             : ");
+                System.out.print("|                             : ");
                 driverLocation = sc1.next();
             }
         }
@@ -198,7 +198,7 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
 
         //getting the input for team name
         System.out.println("|         Enter the player Team from the chart or any new team          |");
-        System.out.print("                             : ");
+        System.out.print("|                             : ");
         driverTeam = sc1.next();
 
         //checking if the team already exits. if present getting the user input again
@@ -209,7 +209,7 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
                 for (Formula1Driver driver : drivers) {
                     if (driver.getTeam().equalsIgnoreCase(driverTeam)) {
                         System.out.println("|          The team already exists, Please enter another team           |");
-                        System.out.print("                             : ");
+                        System.out.print("|                             : ");
                         driverTeam = sc1.next();
                     }
                     else {
@@ -247,29 +247,29 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
     public void ChangeTheTeam() {
         ShowDriverTable();
 
-        integerValidation("|                   Select a driver number to change the team                    |");
-        TableInputValidator("Please enter a valid number ");
+        integerValidation("|               Select a driver number to change the team               |");
+        TableInputValidator("|                     Please enter a valid number                       |");
         int selectedDriver = value;
         String previousTeam = drivers.get(selectedDriver).getTeam();
         drivers.get(selectedDriver).setTeam("-");
 
-        String AlignFormat = "| %-15s |%n";
-        System.out.format("+-----------------+------+%n");
-        System.out.format("|     Teams Available     |%n");
-        System.out.format("+-----------------+------+%n");
+        String AlignFormat = "                    | %-35s |%n";
+        System.out.format("                    +-------------------------------+%n");
+        System.out.format("                    |        Teams Available        |%n");
+        System.out.format("                    +-------------------------------+%n");
         for (Formula1Driver driver : drivers) {
             System.out.format(AlignFormat, driver.getTeam());
         }
-        integerValidation("|                   Select a team number to change the team with                    |");
-        TableInputValidator("Please enter a valid number ");
+        integerValidation("|             Select a team number to change the team with              |");
+        TableInputValidator("|                     Please enter a valid number                       |");
         int selectedTeam = value;
 
         boolean sameNo = false;
         while (!sameNo) {
             if (selectedTeam == selectedDriver)
             {
-                integerValidation("|                   Please select a different Team                    |");
-                TableInputValidator("Please enter a valid number ");
+                integerValidation("|                    Please select a different Team                     |");
+                TableInputValidator("|                     Please enter a valid number                       |");
                 selectedTeam = value;
             }
             else {
@@ -280,7 +280,7 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
         drivers.get(selectedDriver).setTeam(drivers.get(selectedTeam).getTeam());
         drivers.get(selectedTeam).setTeam(previousTeam);
 
-        System.out.println("Team changed successfully");
+        System.out.println("|                       Team changed successfully                       |");
 
         menu();
 
@@ -288,8 +288,11 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
 
     @Override
     public void AddRace() {
-        System.out.println("To add a single race stats enter S/s  || To add multiple race data to a player enter M/m || To Quit enter Q/q ");
-        System.out.print("|                                     : ");
+        System.out.println("""
+                |                 To add a single race stats enter S/s                  |
+                |            To add multiple race data to a player enter M/m            |
+                |                           To Quit enter Q/q                           |""");
+        System.out.print("|                             : ");
         String addType = sc.next();
 
         boolean raceInput = false;
@@ -298,13 +301,13 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
 
                 raceInput = true;
                 SingleRace();
-                While("Races", 1);
+                While("|           To add another Races enter Y/y, to exit enter Q/q           |", 1);
             }
             else if (addType.equals("M") || addType.equals("m"))
             {
                 raceInput = true;
                 MultipleRaces();
-                While("Player", 2);
+                While("|          To add another Player enter Y/y, to exit enter Q/q           |", 2);
 
             }
             else if (addType.equals("Q") || addType.equals("q"))
@@ -314,16 +317,17 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
             }
             else
             {
-                System.out.println("|              Input not valid enter a valid input:                |");
-                System.out.print("|                            : ");
+                System.out.println("|                  Input not valid enter a valid input                  |");
+                System.out.print("|                             : ");
                 addType = sc.next();
             }
         }
     }
 
-    private void While(String what, int SorM)
+    private void While(String printValue, int SorM)
     {
-        System.out.println("To add another " +what+" enter Y/y, to exit enter Q/q : ");
+        System.out.println(printValue);
+        System.out.print("|                             : ");
         String addAgain = sc.next();
         boolean again = false;
         while (!again) {
@@ -336,7 +340,8 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
                 {
                     MultipleRaces();
                 }
-                System.out.println("To add another" +what+ " enter Y/y, to go back to previous menu enter Q/q : ");
+                System.out.println("|    To add another enter Y/y, to go back to previous menu enter Q/q    |");
+                System.out.print("|                             : ");
                 addAgain = sc.next();
             }
             else if (addAgain.equals("Q") || addAgain.equals("q"))
@@ -346,7 +351,8 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
                 AddRace();
             }
             else {
-                System.out.println("Please enter a valid input : ");
+                System.out.println("|                  Input not valid enter a valid input                  |");
+                System.out.print("|                             : ");
                 addAgain = sc.next();
             }
         }
@@ -367,7 +373,8 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
             System.out.format(AlignFormat, "Empty");
         }
 
-        System.out.println("Enter the race date in format(dd/MM/yyyy) : ");
+        System.out.println("|               Enter the race date in format(dd/MM/yyyy)               |");
+        System.out.print("|                             : ");
         String date = sc.next();
         //Set up date format
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
@@ -379,20 +386,21 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
                 dateValid = true;
             }
             /* Date format is invalid */ catch (ParseException e) {
-                System.out.println(date + " is Invalid Date format, Please enter a valid date :");
+                System.out.println("|      "+ date + " is Invalid Date format, Please enter a valid date");
+                System.out.print("|                             : ");
                 date = sc.next();
             }
         }
         dates.add(date);
 
-        System.out.println("|-------------------------------------------------------------------|");
-        System.out.println("| Enter the positions players has won in the race (eg: 1, 2, 3 ...) |");
-        System.out.println("| If not participated or no position was obtained, Please enter a 0 |");
-        System.out.println("|-------------------------------------------------------------------|");
+        System.out.println("|-----------------------------------------------------------------------|");
+        System.out.println("|   Enter the positions players has won in the race (eg: 1, 2, 3 ...)   |");
+        System.out.println("|   If not participated or no position was obtained, Please enter a 0   |");
+        System.out.println("|-----------------------------------------------------------------------|");
 
         for (Formula1Driver driver : drivers) {
             driver.setNoOfRaces(1);
-            integerValidation("Enter the position of the driver " + driver.getName() + " obtained in the race : ");
+            integerValidation("|    Enter the position that " + driver.getName() + " obtained in the race  ");
             if (value == 1) {
                 driver.setFirstPlace(1);
                 driver.setPoints(noOfPoints[0]);
@@ -410,30 +418,30 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
 
     public void MultipleRaces(){
         ShowDriverTable();
-        integerValidation("Select a driver to add data : ");
-        TableInputValidator("Please enter a valid number ");
+        integerValidation("|                       Select a driver to add data                       |");
+        TableInputValidator("|                     Please enter a valid number                       |");
 
         int selectedDriver = value;
-        integerValidation("Enter the no of 1st Places obtained by " + drivers.get(selectedDriver).getName() + " :");
+        integerValidation("|   Enter the no of 1st Places obtained by " + drivers.get(selectedDriver).getName() + " :");
         drivers.get(selectedDriver).setFirstPlace(value);
         int place1 = value;
-        integerValidation("Enter the no of 2nd Places obtained by " + drivers.get(selectedDriver).getName() + " :");
+        integerValidation("|   Enter the no of 2nd Places obtained by " + drivers.get(selectedDriver).getName() + " :");
         drivers.get(selectedDriver).setSecondPlace(value);
         int place2 = value;
-        integerValidation("Enter the no of 3rd Places obtained by " + drivers.get(selectedDriver).getName() + " :");
+        integerValidation("|   Enter the no of 3rd Places obtained by " + drivers.get(selectedDriver).getName() + " :");
         drivers.get(selectedDriver).setThirdPlace(value);
         int place3 = value;
-        integerValidation("Enter the no of Races participated by " + drivers.get(selectedDriver).getName() + " :");
+        integerValidation("|   Enter the no of Races participated by " + drivers.get(selectedDriver).getName() + " :");
         drivers.get(selectedDriver).setNoOfRaces(value);
-        integerValidation("Enter the Total no of Points obtained by " + drivers.get(selectedDriver).getName() + " :");
+        integerValidation("|   Enter the Total no of Points obtained by " + drivers.get(selectedDriver).getName() + " :");
 
         int total = place1 * noOfPoints[0] + place2 * noOfPoints[1] + place3 * noOfPoints[2];
         boolean validTotal = false;
         while (!validTotal)
         {
             if (value < total) {
-                System.out.println("Total no.of Points entered doesnt match with positions/race count total");
-                integerValidation("Please enter a valid Total no.of points : ");
+                System.out.println("|Total no.of Points entered doesnt match with positions/race count total|");
+                integerValidation("|                Please enter a valid Total no.of points                |");
             }
             else {
                 validTotal = true;
@@ -441,7 +449,7 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
         }
         drivers.get(selectedDriver).setPoints(value);
 
-        System.out.println("Data added successfully");
+        System.out.println("|                        Data added successfully                        |");
     }
 
     public void ShowDriverTable() {
@@ -471,7 +479,7 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
 
     public void integerValidation(String test)
     {
-        System.out.print(test);
+        System.out.println(test);
         System.out.print("                             : ");
         while (!sc.hasNextInt()) {
             //this will check for integers
