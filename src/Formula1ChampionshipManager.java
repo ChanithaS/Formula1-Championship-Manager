@@ -84,7 +84,7 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
                     break;
                 }
                 else {
-                    DeleteDriver();
+                    DisplayDriverStat();
                 }
                 break;
             case "5":
@@ -301,13 +301,13 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
 
                 raceInput = true;
                 SingleRace();
-                While("|           To add another Races enter Y/y, to exit enter Q/q           |", 1);
+                While("| To add another Race enter Y/y, to go back to previous menu enter Q/q  |", 1);
             }
             else if (addType.equals("M") || addType.equals("m"))
             {
                 raceInput = true;
                 MultipleRaces();
-                While("|          To add another Player enter Y/y, to exit enter Q/q           |", 2);
+                While("|To add another Player enter Y/y, to go back to previous menu enter Q/q |", 2);
 
             }
             else if (addType.equals("Q") || addType.equals("q"))
@@ -398,9 +398,30 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
         System.out.println("|   If not participated or no position was obtained, Please enter a 0   |");
         System.out.println("|-----------------------------------------------------------------------|");
 
+        Arrays.fill(positions, 9999);
+
         for (Formula1Driver driver : drivers) {
             driver.setNoOfRaces(1);
             integerValidation("|    Enter the position that " + driver.getName() + " obtained in the race  ");
+
+            boolean alreadyAdded = false;
+            while (!alreadyAdded) {
+                if (value < 0 || value > positions.length)
+                {
+                    integerValidation("|                 Please enter a position less than "+positions.length + "                  |");
+                }
+                else {
+                    if (positions[value] == 9999 || value == 0)
+                    {
+                        positions[value] = 1;
+                        alreadyAdded = true;
+                    }
+                    else {
+                        integerValidation("|     Position already obtained by a Player, Please enter a another     |");
+                    }
+                }
+            }
+
             if (value == 1) {
                 driver.setFirstPlace(1);
                 driver.setPoints(noOfPoints[0]);
@@ -425,22 +446,37 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
         integerValidation("|   Enter the no of 1st Places obtained by " + drivers.get(selectedDriver).getName() + " :");
         drivers.get(selectedDriver).setFirstPlace(value);
         int place1 = value;
+
         integerValidation("|   Enter the no of 2nd Places obtained by " + drivers.get(selectedDriver).getName() + " :");
         drivers.get(selectedDriver).setSecondPlace(value);
         int place2 = value;
+
         integerValidation("|   Enter the no of 3rd Places obtained by " + drivers.get(selectedDriver).getName() + " :");
         drivers.get(selectedDriver).setThirdPlace(value);
         int place3 = value;
-        integerValidation("|   Enter the no of Races participated by " + drivers.get(selectedDriver).getName() + " :");
-        drivers.get(selectedDriver).setNoOfRaces(value);
-        integerValidation("|   Enter the Total no of Points obtained by " + drivers.get(selectedDriver).getName() + " :");
 
+        integerValidation("|   Enter the no of Races participated by " + drivers.get(selectedDriver).getName() + " :");
+        int totalRaces = place1 + place2 + place3;
+        boolean validRaces = false;
+        while (!validRaces)
+        {
+            if (value < totalRaces) {
+                System.out.println("|   Total no.of Races entered doesnt match with minimum Places count    |");
+                integerValidation("|                Please enter a valid Total no.of Races                 |");
+            }
+            else {
+                validRaces = true;
+            }
+        }
+        drivers.get(selectedDriver).setNoOfRaces(value);
+
+        integerValidation("|   Enter the Total no of Points obtained by " + drivers.get(selectedDriver).getName() + " :");
         int total = place1 * noOfPoints[0] + place2 * noOfPoints[1] + place3 * noOfPoints[2];
         boolean validTotal = false;
         while (!validTotal)
         {
             if (value < total) {
-                System.out.println("|Total no.of Points entered doesnt match with positions/race count total|");
+                System.out.println("|     No.of Points entered is smaller than minimum point count " + total+"      |");
                 integerValidation("|                Please enter a valid Total no.of points                |");
             }
             else {
@@ -450,6 +486,30 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
         drivers.get(selectedDriver).setPoints(value);
 
         System.out.println("|                        Data added successfully                        |");
+    }
+
+    public void DisplayDriverStat(){
+        ShowDriverTable();
+        integerValidation("|             Please select a Player to Display Statistics              |");
+        TableInputValidator("|                     Please enter a valid number                       |");
+
+        String AlignFormat = "          | %-21s : %-29s |%n";
+        System.out.format("          +-----------------------------+-------------------------+%n");
+        System.out.format("          |     "+ drivers.get(value).getName() +"    |     %n");
+        System.out.format("          +-----------------------------+-------------------------+%n");
+
+        String[] table = {"Team", "Country", "Age", "Points", "Podiums", "    1st Pos", "    2nd Pos", "    3rd Pos", "Races Entered"};
+        int noOf1 = drivers.get(value).getFirstPlace();
+        int noOf2 = drivers.get(value).getSecondPlace();
+        int noOf3 = drivers.get(value).getThirdPlace();
+        int podiums = noOf1 + noOf2 + noOf3;
+        String[] tableData = {drivers.get(value).getTeam(), drivers.get(value).getLocation(), String.valueOf(drivers.get(value).getAge()), String.valueOf(drivers.get(value).getPoints())
+        , String.valueOf(podiums),String.valueOf(noOf1),String.valueOf(noOf2),String.valueOf(noOf3), String.valueOf(drivers.get(value).getNoOfRaces())};
+
+        for (int i = 0; i < table.length; i++){
+            System.out.format(AlignFormat,table[i], tableData[i]);
+        }
+
     }
 
     public void ShowDriverTable() {
