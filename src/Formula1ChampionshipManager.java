@@ -52,7 +52,8 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
     {
         switch (choice){
             case "1":
-                CreateDriver();
+                RunFunctionAgain(0, 1, "|   To Create another driver enter Y/y or to return to menu enter Q/q   |");
+                //CreateDriver();
                 break;
             case "2":
                 if (drivers.isEmpty())
@@ -62,13 +63,15 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
                     break;
                 }
                 else {
-                    DeleteDriver();
+                    RunFunctionAgain(1, 1,"|   To delete another driver enter Y/y or to return to menu enter Q/q   |");
+                    //DeleteDriver();
                 }
                 break;
             case "3":
                 if (drivers.size() >= 2)
                 {
-                    ChangeTheTeam();
+                    RunFunctionAgain(2,1,"| To Change another driver team enter Y/y or to return to menu enter Q/q|");
+                    //ChangeTheTeam();
                 }
                 else {
                     System.out.println("|           Please add two or more drivers to change the team           |");
@@ -84,7 +87,8 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
                     break;
                 }
                 else {
-                    DisplayDriverStat();
+                    RunFunctionAgain(3, 1, "|   To display another driver enter Y/y or to return to menu enter Q/q  |");
+                    //DisplayDriverStat();
                 }
                 break;
             case "5":
@@ -95,7 +99,8 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
                     break;
                 }
                 else {
-                    DeleteDriver();
+                    //RunFunctionAgain(4);
+                    F1DriverTable();
                 }
                 break;
             case "6":
@@ -117,6 +122,67 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
                 String input = sc.next();
                 MenuChoices(input);
         }
+    }
+    public void RunFunctionAgain(int value, int SorM, String s)
+    {
+        String input;
+        boolean again = true;
+        do {
+            if(value == 0)
+            {
+                CreateDriver();
+            }
+            else if(value == 1){
+                DeleteDriver();
+            }
+            else if(value == 2){
+                ChangeTheTeam();
+            }
+            else if(value == 3)
+            {
+                DisplayDriverStat();
+            }
+            else if (value == 4)
+            {
+                F1DriverTable();
+            }
+            else if (value == 5)
+            {
+                SingleRace();
+            }
+            else if (value == 6){
+                MultipleRaces();
+            }
+            boolean valid;
+            do {
+                System.out.println(s);
+                input = sc.next();
+
+                if (input.equals("Q") || input.equals("q"))
+                {
+                    again = false;
+                    valid = false;
+                }
+                else if (input.equals("Y") || input.equals("y"))
+                {
+                    valid = false;
+                }
+                else {
+                    System.out.println("Please enter valid input");
+                    valid = true;
+                }
+            } while (valid);
+        } while (again);
+
+        if (SorM == 1)
+        {
+            menu();
+        }
+        else if (SorM ==2)
+        {
+            AddRace();
+        }
+
     }
 
     @Override
@@ -227,12 +293,11 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
         drivers.add(new Formula1Driver(driverName, driverLocation.toUpperCase(), driverTeam, driverAge));
         System.out.println("|                       Driver added Successfully                       |");
 
-        RunAgain("|    To add another driver enter Y/y or to return to menu enter Q/q     |", 4, 2);
+        //menu();
     }
 
     @Override
     public void DeleteDriver() {
-
         ShowDriverTable();
         integerValidation("|                   Select a driver number to delete                    |");
         TableInputValidator("|                     Please enter a valid number                       |");
@@ -240,8 +305,6 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
         System.out.println("|              Driver " + drivers.get(value).getName() + "was deleted successfully");
         TeamNames.add(drivers.get(value).getTeam());
         drivers.remove(value);
-
-        RunAgain("|   To delete another driver enter Y/y or to return to menu enter Q/q   |", 5,2);
     }
 
     @Override
@@ -282,9 +345,6 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
         drivers.get(selectedTeam).setTeam(previousTeam);
 
         System.out.println("|                       Team changed successfully                       |");
-
-        menu();
-
     }
 
     @Override
@@ -301,14 +361,16 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
             if (addType.equals("S") || addType.equals("s")) {
 
                 raceInput = true;
-                SingleRace();
-                RunAgain("| To add another Race enter Y/y, to go back to previous menu enter Q/q  |", 1, 1);
+                //SingleRace();
+                RunFunctionAgain(5,2, "| To add another Race enter Y/y, to go back to previous menu enter Q/q  |");
+                //RunAgain("| To add another Race enter Y/y, to go back to previous menu enter Q/q  |", 1, 1);
             }
             else if (addType.equals("M") || addType.equals("m"))
             {
                 raceInput = true;
-                MultipleRaces();
-                RunAgain("|To add another Player enter Y/y, to go back to previous menu enter Q/q |", 2, 1);
+                //MultipleRaces();
+                RunFunctionAgain(6,2, "|To add another Player enter Y/y, to go back to previous menu enter Q/q |");
+                //RunAgain("|To add another Player enter Y/y, to go back to previous menu enter Q/q |", 2, 1);
 
             }
             else if (addType.equals("Q") || addType.equals("q"))
@@ -508,72 +570,35 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
         }
         System.out.format("          +-----------------------+---------------------------+%n");
 
-        RunAgain("|  To view another player data enter Y/y or to exit to menu enter Q/q  |", 3, 2);
+        //RunAgain("|  To view another player data enter Y/y or to exit to menu enter Q/q  |", 3, 2);
     }
 
     public void F1DriverTable()
     {
-        int[] points = new int[drivers.size()];
-        for (int i = 0; i < drivers.size(); i++){
-            points[i] = drivers.get(i).getPoints();
-            System.out.println(points[i]);
+//        Comparator<Formula1Driver> sortDrivers = new Comparator<Formula1Driver>() {
+//            @Override
+//            public int compare(Formula1Driver o1, Formula1Driver o2) {
+//                return 0;
+//            }
+//        };
+//        Collections.sort(sortDrivers, new Comparator<Formula1Driver>() {
+//            @Override
+//            public int compare(Formula1Driver o1, Formula1Driver o2) {
+//                return 0;
+//            }
+//
+//
+//        });
+
+        for (Formula1Driver driver : drivers) {
+            System.out.println(driver.getPoints());
         }
-        Arrays.sort(points);
-
-
-    }
-
-    private void RunAgain(String printValue, int SorM, int function)
-    {
-        System.out.println(printValue);
-        System.out.print("|                             : ");
-        String addAgain = sc.next();
-        boolean again = false;
-        while (!again) {
-            if (addAgain.equals("Y") || addAgain.equals("y")) {
-                if (SorM == 1)
-                {
-                    SingleRace();
-                }
-                else if (SorM == 2)
-                {
-                    MultipleRaces();
-                }
-                else if (SorM == 3)
-                {
-                    DisplayDriverStat();
-                }
-                else if (SorM == 4)
-                {
-                    CreateDriver();
-                }
-                else if (SorM == 5)
-                {
-                    DeleteDriver();
-                }
-                System.out.println(printValue);
-                System.out.print("|                             : ");
-                addAgain = sc.next();
-            }
-            else if (addAgain.equals("Q") || addAgain.equals("q"))
-            {
-                //raceInput = true;
-                again = true;
-                if (function == 1)
-                {
-                    AddRace();
-                }
-                else if (function == 2)
-                {
-                    menu();
-                }
-            }
-            else {
-                System.out.println("|                  Input not valid enter a valid input                  |");
-                System.out.print("|                             : ");
-                addAgain = sc.next();
-            }
+//        ArrayList<Formula1Driver> sortDrivers = new ArrayList<Formula1Driver>();
+//        sortDrivers.sort(Comparator.comparing(Formula1Driver::getPoints));
+        for (Formula1Driver driver : drivers) {
+            System.out.println(driver.getPoints());
         }
+//        sortDrivers.sort(Comparator.comparing(Formula1Driver::getPoints).reversed());
     }
 
     public void ShowDriverTable() {
@@ -585,7 +610,6 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
             System.out.format(AlignFormat,"["+ i +"]",drivers.get(i).getName(), drivers.get(i).getTeam());
         }
     }
-
 
     /////////////////////////////////////// Validation /////////////////////////
     public void TableInputValidator(String sentence) {
