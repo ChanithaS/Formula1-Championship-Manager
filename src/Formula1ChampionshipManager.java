@@ -1,3 +1,4 @@
+import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -19,6 +20,24 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
     public static String driverTeam;
 
     public static void main(String[] args) {
+        try {
+            System.out.println("|                      Loading saved data....                      |");
+            //loading data from the saved file as a new object output stream
+            ObjectInputStream LoadFile = new ObjectInputStream(new FileInputStream("F1Data.cha"));
+
+            drivers.clear();
+            drivers = (ArrayList<Formula1Driver>) LoadFile.readObject();
+            for(int i=0; i<drivers.size(); i++)
+            {
+                System.out.println(drivers.get(i));
+            }
+
+            LoadFile.close();
+        } catch (IOException | ClassNotFoundException e) {
+            //if any saved files cannot be found giving a error massage
+            System.out.println("|       You don't have any files to Load. Please Save a file       |");
+            //e.printStackTrace();
+        }
         Formula1ChampionshipManager F12 = new Formula1ChampionshipManager();
         F12.menu();
     }
@@ -27,8 +46,8 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
     public void menu() {
         String menu = "\n" +
                 "█████████████████████████████████████████████████████████████████████████\n" +
-                "█▄─█▀▀▀█─▄█▄─▄▄─█▄─▄███─▄▄▄─█─▄▄─█▄─▀█▀─▄█▄─▄▄─███─▄─▄─█─▄▄─███▄─▄▄─█▀ ██\n" +
-                "██─█─█─█─███─▄█▀██─██▀█─███▀█─██─██─█▄█─███─▄█▀█████─███─██─████─▄████ ██\n" +
+                "█▄─█▀▀▀█─▄█▄─▄▄─█▄─▄███─▄▄▄─█─▄▄─█▄ ▀█▀─▄█▄─▄▄─███─▄─▄─█─▄▄─███▄─▄▄─█▀ ██\n" +
+                "██─█─█─█─███─▄█▀██─██▀█─███▀█─██─██ █▄█─███─▄█▀█████─███─██─████─▄████ ██\n" +
                 "▀▀▄▄▄▀▄▄▄▀▀▄▄▄▄▄▀▄▄▄▄▄▀▄▄▄▄▄▀▄▄▄▄▀▄▄▄▀▄▄▄▀▄▄▄▄▄▀▀▀▀▄▄▄▀▀▄▄▄▄▀▀▀▄▄▄▀▀▀▄▄▄▀\n"
                 .concat("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n")
                 .concat("|                      [1] . Create a New Driver                        |\n")
@@ -113,7 +132,7 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
                 }
                 break;
             case "99":
-                //sah
+                exit();
                 break;
             default:
                 System.out.println("|              Input not valid please enter a valid input               |");
@@ -609,27 +628,42 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
                 System.out.format(tableFormat, i + 1, drivers.get(i).getName(), drivers.get(i).getLocation(),drivers.get(i).getTeam(), drivers.get(i).getPoints());
             }
             System.out.format("+-----+---------------------------+-------------+---------------------+-------+%n\n");
+
+            System.out.println("|                To return to main menu enter any value                 |");
+            System.out.print("                             : ");
+            String back = sc.next();
+            if (!back.equals("99999999999"))
+            {
+                menu();
+            }
         }
         else {
             System.out.println("|      Please add race data to drivers to view the F1 Driver Table      |");
         }
-        System.out.println("|                To return to main menu enter any value                 |");
-        String back = sc.next();
-        if (!back.equals("99999999999"))
-        {
-            menu();
+        menu();
+    }
+    private void exit() {
+        try {
+            //creating a new data file and storing data into it as a object output stream
+            //String saveFilePath = "./saveData/" + "F1Data.txt";
+            //FileOutputStream saveDataFile = new FileOutputStream(saveFilePath);
+            ObjectOutputStream SaveFile = new ObjectOutputStream(new FileOutputStream("F1Data.cha"));    //referred from https://www.programiz.com/java-programming/objectoutputstream
+                                                                         //referred from https://stackoverflow.com/questions/27787067/storing-integers-and-arrays-in-a-file-and-reading-them
+            SaveFile.writeObject(drivers);
+            SaveFile.writeObject(dates);
+            //data is written to the file and closed
+            SaveFile.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-
+        System.out.println(" ▀█▀.█▄█.█▀█.█▄.█.█▄▀　█▄█.█▀█.█─█\n" +
+                "─.█.─█▀█.█▀█.█.▀█.█▀▄　─█.─█▄█.█▄█");
     }
     public boolean RaceAdded ()
     {
         boolean result = false;
         for (Formula1Driver driver : drivers) {
-            if (driver.getNoOfRaces() < 1) {
-                result = false;
-            } else {
-                result = true;
-            }
+            result = driver.getNoOfRaces() >= 1;
         }
         return result;
     }
