@@ -1,4 +1,6 @@
-public class Formula1Driver extends Driver{
+import java.io.Serializable;
+
+public class Formula1Driver extends Driver implements Serializable, Comparable<Formula1Driver>{
     private int firstPlace;
     private int secondPlace;
     private int thirdPlace;
@@ -47,5 +49,16 @@ public class Formula1Driver extends Driver{
 
     public void setPoints(int points) {
         Points += points;
+    }
+
+    @Override
+    public int compareTo(Formula1Driver sortTemp) {
+        if (sortTemp.getPoints() == this.Points)
+        {
+            return sortTemp.firstPlace - this.firstPlace;
+        }
+        else {
+            return  sortTemp.getPoints() - this.Points;
+        }
     }
 }

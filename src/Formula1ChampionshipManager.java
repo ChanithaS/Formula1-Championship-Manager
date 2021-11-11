@@ -4,7 +4,6 @@ import java.util.*;
 
 public class Formula1ChampionshipManager implements ChampionshipManager {
 
-    //Driver driver = new Driver();
     public static ArrayList<Formula1Driver> drivers = new ArrayList<>();
 
     public Scanner sc = new Scanner(System.in);
@@ -63,8 +62,7 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
                     break;
                 }
                 else {
-                    RunFunctionAgain(1, 1,"|   To delete another driver enter Y/y or to return to menu enter Q/q   |");
-                    //DeleteDriver();
+                    DeleteDriver();
                 }
                 break;
             case "3":
@@ -118,7 +116,8 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
                 //sah
                 break;
             default:
-                System.out.println("Input not valid please enter a valid input \n                   :");
+                System.out.println("|              Input not valid please enter a valid input               |");
+                System.out.print("|                             : ");
                 String input = sc.next();
                 MenuChoices(input);
         }
@@ -131,9 +130,6 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
             if(value == 0)
             {
                 CreateDriver();
-            }
-            else if(value == 1){
-                DeleteDriver();
             }
             else if(value == 2){
                 ChangeTheTeam();
@@ -156,6 +152,7 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
             boolean valid;
             do {
                 System.out.println(s);
+                System.out.print("|                             : ");
                 input = sc.next();
 
                 if (input.equals("Q") || input.equals("q"))
@@ -168,7 +165,7 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
                     valid = false;
                 }
                 else {
-                    System.out.println("Please enter valid input");
+                    System.out.println("|              Input not valid please enter a valid input               |");
                     valid = true;
                 }
             } while (valid);
@@ -298,13 +295,50 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
 
     @Override
     public void DeleteDriver() {
-        ShowDriverTable();
-        integerValidation("|                   Select a driver number to delete                    |");
-        TableInputValidator("|                     Please enter a valid number                       |");
+        String inputOp;
+        boolean again = true;
+        do {
+            if (drivers.isEmpty())
+            {
+                again = false;
+                System.out.println("|               Driver list empty, Please add a driver.                 |");
+                menu();
+            }
+            else {
+                ShowDriverTable();
+                integerValidation("|                   Select a driver number to delete                    |");
+                TableInputValidator("|                     Please enter a valid number                       |");
 
-        System.out.println("|              Driver " + drivers.get(value).getName() + "was deleted successfully");
-        TeamNames.add(drivers.get(value).getTeam());
-        drivers.remove(value);
+                System.out.println("|              Driver " + drivers.get(value).getName() + "was deleted successfully");
+                TeamNames.add(drivers.get(value).getTeam());
+                drivers.remove(value);
+
+                boolean valid;
+                do {
+                    System.out.println("|   To delete another driver enter Y/y or to return to menu enter Q/q   |");
+                    System.out.print("|                             : ");
+                    inputOp = sc.next();
+
+                    if (inputOp.equals("Q") || inputOp.equals("q"))
+                    {
+                        again = false;
+                        valid = false;
+                        menu();
+                    }
+                    else if (inputOp.equals("Y") || inputOp.equals("y"))
+                    {
+                        valid = false;
+                    }
+                    else {
+                        System.out.println("|              Input not valid please enter a valid input               |");
+                        valid = true;
+                    }
+                } while (valid);
+            }
+
+        } while (again);
+
+
     }
 
     @Override
@@ -324,6 +358,7 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
         for (int i = 0; i < drivers.size(); i++) {
             System.out.format(AlignFormat, "["+ i +"] " + drivers.get(i).getTeam());
         }
+        System.out.format("                    +-------------------------------+%n\n");
         integerValidation("|             Select a team number to change the team with              |");
         TableInputValidator("|                     Please enter a valid number                       |");
         int selectedTeam = value;
@@ -350,6 +385,7 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
     @Override
     public void AddRace() {
         System.out.println("""
+                |                                                                       |
                 |                 To add a single race stats enter S/s                  |
                 |            To add multiple race data to a player enter M/m            |
                 |                           To Quit enter Q/q                           |""");
@@ -389,19 +425,20 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
 
     public void SingleRace()
     {
-        String AlignFormat = "| %-15s |%n";
-        System.out.format("+-----------------+------+%n");
-        System.out.format("|      Dates added       |%n");
-        System.out.format("+-----------------+------+%n");
+        String alignDates = "                    | %-29s |%n";
+        System.out.format("                    +-------------------------------+%n");
+        System.out.format("                    |             Dates             |%n");
+        System.out.format("                    +-------------------------------+%n");
 
         if (!dates.isEmpty()) {
 
             for (String datesAdded : dates) {
-                System.out.format(AlignFormat, datesAdded);
+                System.out.format(alignDates, datesAdded);
             }
         } else {
-            System.out.format(AlignFormat, "Empty");
+            System.out.format(alignDates, "Empty");
         }
+        System.out.format("                    +-------------------------------+%n\n");
 
         System.out.println("|               Enter the race date in format(dd/MM/yyyy)               |");
         System.out.print("|                             : ");
@@ -529,28 +566,6 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
         integerValidation("|             Please select a Player to Display Statistics              |");
         TableInputValidator("|                     Please enter a valid number                       |");
 
-        boolean hasData = false;
-        while (!hasData)
-        {
-            if (drivers.get(value).getNoOfRaces() < 1)
-            {
-                System.out.println("|         Please add race data to the driver to view statistics         |");
-                if (drivers.size() < 2)
-                {
-                    hasData = true;
-                    menu();
-                }
-                else {
-                    integerValidation("|                  Please select another driver                   |");
-                    TableInputValidator("|                     Please enter a valid number                       |");
-                }
-            }
-            else {
-                hasData = true;
-            }
-        }
-
-
         String AlignFormat = "          | %-21s : %-25s |%n";
         String format2 = "          | %-49s |%n";
         System.out.format("          +-----------------------+---------------------------+%n");
@@ -563,52 +578,70 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
         int noOf3 = drivers.get(value).getThirdPlace();
         int podiums = noOf1 + noOf2 + noOf3;
         String[] tableData = {drivers.get(value).getTeam(), drivers.get(value).getLocation(), String.valueOf(drivers.get(value).getAge()), String.valueOf(drivers.get(value).getPoints())
-        , String.valueOf(podiums),String.valueOf(noOf1),String.valueOf(noOf2),String.valueOf(noOf3), String.valueOf(drivers.get(value).getNoOfRaces())};
+                , String.valueOf(podiums),String.valueOf(noOf1),String.valueOf(noOf2),String.valueOf(noOf3), String.valueOf(drivers.get(value).getNoOfRaces())};
 
         for (int i = 0; i < table.length; i++){
             System.out.format(AlignFormat,table[i], tableData[i]);
         }
         System.out.format("          +-----------------------+---------------------------+%n");
 
-        //RunAgain("|  To view another player data enter Y/y or to exit to menu enter Q/q  |", 3, 2);
+        if (drivers.get(value).getNoOfRaces() < 1)
+        {
+            System.out.println("""
+                    |       NOTE : Player race data hasn't been added to this player.       |
+                    |               To view player statistics in more detail,               |
+                    |                  Please add race data to the player.                  |
+                    """);
+        }
     }
 
     public void F1DriverTable()
     {
-//        Comparator<Formula1Driver> sortDrivers = new Comparator<Formula1Driver>() {
-//            @Override
-//            public int compare(Formula1Driver o1, Formula1Driver o2) {
-//                return 0;
-//            }
-//        };
-//        Collections.sort(sortDrivers, new Comparator<Formula1Driver>() {
-//            @Override
-//            public int compare(Formula1Driver o1, Formula1Driver o2) {
-//                return 0;
-//            }
-//
-//
-//        });
+        if (RaceAdded())
+        {
+            Collections.sort(drivers);
 
-        for (Formula1Driver driver : drivers) {
-            System.out.println(driver.getPoints());
+            String tableFormat = "|  %-3s|      %-15s      |     %-3S     |   %-15s   | %-4s  |%n";
+            System.out.format("+-----+---------------------------+-------------+---------------------+-------+%n");
+            System.out.format("| POS |          Driver           | NATIONALITY |         CAR         |  PTS  |%n");
+            System.out.format("+-----+---------------------------+-------------+---------------------+-------+%n");
+            for (int i = 0; i < drivers.size(); i++){
+                System.out.format(tableFormat, i + 1, drivers.get(i).getName(), drivers.get(i).getLocation(),drivers.get(i).getTeam(), drivers.get(i).getPoints());
+            }
+            System.out.format("+-----+---------------------------+-------------+---------------------+-------+%n\n");
         }
-//        ArrayList<Formula1Driver> sortDrivers = new ArrayList<Formula1Driver>();
-//        sortDrivers.sort(Comparator.comparing(Formula1Driver::getPoints));
-        for (Formula1Driver driver : drivers) {
-            System.out.println(driver.getPoints());
+        else {
+            System.out.println("|      Please add race data to drivers to view the F1 Driver Table      |");
         }
-//        sortDrivers.sort(Comparator.comparing(Formula1Driver::getPoints).reversed());
+        System.out.println("|                To return to main menu enter any value                 |");
+        String back = sc.next();
+        if (!back.equals("99999999999"))
+        {
+            menu();
+        }
+
     }
-
-    public void ShowDriverTable() {
-        String AlignFormat = "| %-3s | %-15s | %-15s |%n";
-        System.out.format("+-----------------+------+%n");
-        System.out.format("|     Driver     |    Driver Team   |%n");
-        System.out.format("+-----------------+------+%n");
-        for (int i = 0; i < drivers.size(); i++){
-            System.out.format(AlignFormat,"["+ i +"]",drivers.get(i).getName(), drivers.get(i).getTeam());
+    public boolean RaceAdded ()
+    {
+        boolean result = false;
+        for (Formula1Driver driver : drivers) {
+            if (driver.getNoOfRaces() < 1) {
+                result = false;
+            } else {
+                result = true;
+            }
         }
+        return result;
+    }
+    public void ShowDriverTable() {
+        String AlignFormat = "              | %-2s] %-17s | %-16s |%n";
+        System.out.format("              +-----------------------+------------------+%n");
+        System.out.format("              |         Driver        |    Driver Team   |%n");
+        System.out.format("              +-----------------------+------------------+%n");
+        for (int i = 0; i < drivers.size(); i++){
+            System.out.format(AlignFormat,"["+ i,drivers.get(i).getName(), drivers.get(i).getTeam());
+        }
+        System.out.format("              +-----------------------+------------------+%n");
     }
 
     /////////////////////////////////////// Validation /////////////////////////
@@ -638,34 +671,3 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
         value = sc.nextInt();
     }
 }
-
-//        for (String str : TeamNames) {
-//            if (str.equalsIgnoreCase(driverTeam)) {
-//                System.out.println("present");
-//            }
-//        }
-//        System.out.println(Arrays.toString(TeamNames.toArray()));
-
-//    public static boolean dateValidation(String inputDate)
-//    {
-//        //Set up date format
-//        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-//        //dateFormat.setLenient(false);
-//        /* Create Date object
-//         * parse the string into date
-//         */
-//        try
-//        {
-//            dateFormat.parse(inputDate);
-//            System.out.println(inputDate+" is valid date format");
-//        }
-//        /* Date format is invalid */
-//        catch (ParseException e)
-//        {
-//            System.out.println(inputDate+" is Invalid Date format");
-//            return false;
-//        }
-//        /* Return true if date format is valid */
-//        return true;
-//    }
-
