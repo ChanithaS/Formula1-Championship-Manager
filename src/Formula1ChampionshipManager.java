@@ -10,9 +10,6 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
     public Scanner sc = new Scanner(System.in);
     Scanner sc1 = new Scanner(System.in).useDelimiter("\n");
 
-    public static String[] TeamArray = {"Mercedes", "Red Bull Racing", "McLaren",
-            "Ferrari", "Alpine", "AlphaTauri", "Aston Martin", "Williams",
-            "Alpha Romeo Racing", "Haas F1 Team"};
     public static List<String> TeamNames = new ArrayList<>(Arrays.asList(TeamArray));
     public static ArrayList<String> dates = new ArrayList<>();
 
@@ -27,11 +24,12 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
 
             drivers.clear();
             drivers = (ArrayList<Formula1Driver>) LoadFile.readObject();
+            dates = (ArrayList<String>) LoadFile.readObject();
+
             for(int i=0; i<drivers.size(); i++)
             {
                 System.out.println(drivers.get(i));
             }
-
             LoadFile.close();
         } catch (IOException | ClassNotFoundException e) {
             //if any saved files cannot be found giving a error massage
@@ -645,19 +643,19 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
     private void exit() {
         try {
             //creating a new data file and storing data into it as a object output stream
-            //String saveFilePath = "./saveData/" + "F1Data.txt";
-            //FileOutputStream saveDataFile = new FileOutputStream(saveFilePath);
+
             ObjectOutputStream SaveFile = new ObjectOutputStream(new FileOutputStream("F1Data.cha"));    //referred from https://www.programiz.com/java-programming/objectoutputstream
                                                                          //referred from https://stackoverflow.com/questions/27787067/storing-integers-and-arrays-in-a-file-and-reading-them
             SaveFile.writeObject(drivers);
             SaveFile.writeObject(dates);
+
             //data is written to the file and closed
             SaveFile.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println(" ▀█▀.█▄█.█▀█.█▄.█.█▄▀　█▄█.█▀█.█─█\n" +
-                "─.█.─█▀█.█▀█.█.▀█.█▀▄　─█.─█▄█.█▄█");
+        System.out.println("                     ▀█▀.█▄█.█▀█.█▄.█.█▄▀　█▄█.█▀█.█─█                    \n" +
+                "                    ─.█.─█▀█.█▀█.█.▀█.█▀▄　─█.─█▄█.█▄█                    ");
     }
     public boolean RaceAdded ()
     {
