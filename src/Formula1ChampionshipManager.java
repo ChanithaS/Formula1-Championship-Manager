@@ -6,18 +6,23 @@ import java.util.*;
 public class Formula1ChampionshipManager implements ChampionshipManager {
 
     public static ArrayList<Formula1Driver> drivers = new ArrayList<>();
+    public static ArrayList<Dates> dates = new ArrayList<>();
 
     public Scanner sc = new Scanner(System.in);
     Scanner sc1 = new Scanner(System.in).useDelimiter("\n");
 
     public static List<String> TeamNames = new ArrayList<>(Arrays.asList(TeamArray));
-    public static ArrayList<String> dates = new ArrayList<>();
+    //public static ArrayList<String> dates = new ArrayList<>();
 
     public static int value;
     public static String driverTeam;
 
     public static void main(String[] args) {
         Save();
+//        for (int i = 0; i < dates.size(); i++){
+//            System.out.println(dates.get(i).getDate());
+//            dates.get(i).Print();
+//        }
         Formula1ChampionshipManager F12 = new Formula1ChampionshipManager();
         F12.menu();
     }
@@ -49,8 +54,7 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
         MenuChoices(mainMenuInput);
     }
 
-    public void MenuChoices(String choice)
-    {
+    public void MenuChoices(String choice) {
         switch (choice){
             case "1":
                 RunFunctionAgain(0, 1, "|   To Create another driver enter Y/y or to return to menu enter Q/q   |");
@@ -138,8 +142,8 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
                 MenuChoices(input);
         }
     }
-    public void RunFunctionAgain(int value, int SorM, String s)
-    {
+
+    public void RunFunctionAgain(int value, int SorM, String s) {
         String input;
         boolean again = true;
         do {
@@ -205,6 +209,18 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
         System.out.println("|              Please enter the player name (ex: Don joe)               |");
         System.out.print("|                             : ");
         String driverName = sc1.next();
+        boolean validName = false;
+        while (!validName){
+            if (returnYorN(driverName))
+            {
+                System.out.println("|                       Please enter a valid Name                       |");
+                System.out.print("|                             : ");
+                driverName = sc1.next();
+            }
+            else {
+                validName = true;
+            }
+        }
 
         //getting the player location in ISO format --------------------------------------------------------------------
         System.out.println("|        Please enter the player Location (ex: Sri Lanka = LKA )        |");
@@ -446,22 +462,25 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
         System.out.format("                    |             Dates             |%n");
         System.out.format("                    +-------------------------------+%n");
 
+        //checking if dates object array is empty or not and printing the dates table accordingly
         if (!dates.isEmpty()) {
 
-            for (String datesAdded : dates) {
-                System.out.format(alignDates, datesAdded);
+            for (Dates date : dates) {
+                System.out.format(alignDates, date.getDate());
             }
         } else {
             System.out.format(alignDates, "Empty");
         }
         System.out.format("                    +-------------------------------+%n\n");
 
+        //getting a user input for dates
         System.out.println("|               Enter the race date in format(dd/MM/yyyy)               |");
         System.out.print("|                             : ");
         String date = sc.next();
         //Set up date format
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
+        //Validating the date as if its a real date or not
         boolean dateValid = false;
         while (!dateValid) {
             try {
@@ -474,26 +493,36 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
                 date = sc.next();
             }
         }
-        dates.add(date);
+        //adding date to the dates object array
+        dates.add(new Dates(date));
+        int index = returnIndex(date);
 
         System.out.println("|-----------------------------------------------------------------------|");
         System.out.println("|   Enter the positions players has won in the race (eg: 1, 2, 3 ...)   |");
         System.out.println("|   If not participated or no position was obtained, Please enter a 0   |");
         System.out.println("|-----------------------------------------------------------------------|");
 
+        //initializing the positions array with a default value 9999
+        //positions array in the interface
         Arrays.fill(positions, 9999);
 
+        //for each driver
         for (Formula1Driver driver : drivers) {
+            //incrementing race count by 1
             driver.setNoOfRaces(1);
+            //getting the user input
             integerValidation("|    Enter the position that " + driver.getName() + " obtained in the race  ");
 
+            //setting a while loop until player enters a valid position
             boolean alreadyAdded = false;
             while (!alreadyAdded) {
+                //checking if entered position in less than zero or greater than maximum no.of drivers.
                 if (value < 0 || value > positions.length)
                 {
                     integerValidation("|                 Please enter a position less than "+positions.length + "                  |");
                 }
                 else {
+                    //checking if its a default initialized value or not
                     if (positions[value] == 9999 || value == 0)
                     {
                         positions[value] = 1;
@@ -517,6 +546,11 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
             } else if (value > 3 && value <= 9) {
                 driver.setPoints(noOfPoints[value - 1]);
             }
+
+
+            dates.get(index).setParticipated(driver.getName());
+            dates.get(index).setPosition(value);
+
         }
     }
 
@@ -611,8 +645,7 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
         }
     }
 
-    public void F1DriverTable()
-    {
+    public void F1DriverTable() {
         if (RaceAdded())
         {
             Collections.sort(drivers);
@@ -652,7 +685,7 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
 
             drivers.clear();
             drivers = (ArrayList<Formula1Driver>) LoadFile.readObject();
-            dates = (ArrayList<String>) LoadFile.readObject();
+            dates = (ArrayList<Dates>) LoadFile.readObject();
 
             for(int i=0; i<drivers.size(); i++)
             {
@@ -665,6 +698,7 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
             //e.printStackTrace();
         }
     }
+
     private void exit() {
         try {
             //creating a new data file and storing data into it as a object output stream
@@ -682,8 +716,8 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
         System.out.println("                     ▀█▀.█▄█.█▀█.█▄.█.█▄▀　█▄█.█▀█.█─█                    \n" +
                 "                    ─.█.─█▀█.█▀█.█.▀█.█▀▄　─█.─█▄█.█▄█                    ");
     }
-    public boolean RaceAdded ()
-    {
+
+    public boolean RaceAdded () {
         boolean result = false;
         for (Formula1Driver driver : drivers) {
             result = driver.getNoOfRaces() >= 1;
@@ -700,6 +734,33 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
             System.out.format(AlignFormat,"["+ i,drivers.get(i).getName(), drivers.get(i).getTeam());
         }
         System.out.format("              +-----------------------+------------------+%n");
+    }
+
+    public int returnIndex(String compDate) {
+        int valueIndex = 0;
+        for (int i = 0; i < dates.size(); i++)
+        {
+            if (dates.get(i).getDate().equals(compDate))
+            {
+                valueIndex = i;
+            }
+        }
+        return valueIndex;
+    }
+
+    public boolean returnYorN(String compName) {
+        boolean result = false;
+        for (int i = 0; i < dates.size(); i++)
+        {
+            if (drivers.get(i).getName().equals(compName))
+            {
+                result = true;
+            }
+            else {
+                result = false;
+            }
+        }
+        return result;
     }
 
     /////////////////////////////////////// Validation /////////////////////////
