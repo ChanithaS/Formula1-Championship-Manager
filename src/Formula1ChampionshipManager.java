@@ -17,25 +17,7 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
     public static String driverTeam;
 
     public static void main(String[] args) {
-        try {
-            System.out.println("|                      Loading saved data....                      |");
-            //loading data from the saved file as a new object output stream
-            ObjectInputStream LoadFile = new ObjectInputStream(new FileInputStream("F1Data.cha"));
-
-            drivers.clear();
-            drivers = (ArrayList<Formula1Driver>) LoadFile.readObject();
-            dates = (ArrayList<String>) LoadFile.readObject();
-
-            for(int i=0; i<drivers.size(); i++)
-            {
-                System.out.println(drivers.get(i));
-            }
-            LoadFile.close();
-        } catch (IOException | ClassNotFoundException e) {
-            //if any saved files cannot be found giving a error massage
-            System.out.println("|       You don't have any files to Load. Please Save a file       |");
-            //e.printStackTrace();
-        }
+        Save();
         Formula1ChampionshipManager F12 = new Formula1ChampionshipManager();
         F12.menu();
     }
@@ -657,11 +639,37 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
         }
         menu();
     }
+
+    private static void Save(){
+        for (int i = 0; i < drivers.size(); i++) {
+            int finalI = i;
+            TeamNames.removeIf(value->value.equalsIgnoreCase(drivers.get(finalI).getTeam()));
+        }
+        try {
+            System.out.println("|                      Loading saved data....                      |");
+            //loading data from the saved file as a new object output stream
+            ObjectInputStream LoadFile = new ObjectInputStream(new FileInputStream("F1Data.txt"));
+
+            drivers.clear();
+            drivers = (ArrayList<Formula1Driver>) LoadFile.readObject();
+            dates = (ArrayList<String>) LoadFile.readObject();
+
+            for(int i=0; i<drivers.size(); i++)
+            {
+                System.out.println(drivers.get(i));
+            }
+            LoadFile.close();
+        } catch (IOException | ClassNotFoundException e) {
+            //if any saved files cannot be found giving a error massage
+            System.out.println("|       You don't have any files to Load. Please Save a file       |");
+            //e.printStackTrace();
+        }
+    }
     private void exit() {
         try {
             //creating a new data file and storing data into it as a object output stream
 
-            ObjectOutputStream SaveFile = new ObjectOutputStream(new FileOutputStream("F1Data.cha"));    //referred from https://www.programiz.com/java-programming/objectoutputstream
+            ObjectOutputStream SaveFile = new ObjectOutputStream(new FileOutputStream("F1Data.txt"));    //referred from https://www.programiz.com/java-programming/objectoutputstream
                                                                          //referred from https://stackoverflow.com/questions/27787067/storing-integers-and-arrays-in-a-file-and-reading-them
             SaveFile.writeObject(drivers);
             SaveFile.writeObject(dates);
@@ -682,6 +690,7 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
         }
         return result;
     }
+
     public void ShowDriverTable() {
         String AlignFormat = "              | %-2s] %-17s | %-16s |%n";
         System.out.format("              +-----------------------+------------------+%n");

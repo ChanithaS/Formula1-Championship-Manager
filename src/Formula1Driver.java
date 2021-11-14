@@ -1,4 +1,5 @@
 import java.io.Serializable;
+import java.util.Comparator;
 
 public class Formula1Driver extends Driver implements Serializable, Comparable<Formula1Driver>{
     private int firstPlace;
@@ -61,4 +62,33 @@ public class Formula1Driver extends Driver implements Serializable, Comparable<F
             return  sortTemp.getPoints() - this.Points;
         }
     }
+
+    /*Comparator for sorting the list by Student Name*/
+    public static Comparator<Formula1Driver> DriverNameComparator = new Comparator<Formula1Driver>() {
+
+        public int compare(Formula1Driver name1, Formula1Driver name2) {
+            String driverName1 = name1.getName().toUpperCase();
+            String driverName2 = name2.getName().toUpperCase();
+
+            //ascending order
+            //return driverName1.compareTo(driverName2);
+
+            //descending order
+            return driverName2.compareTo(driverName1);
+        }};
+
+    /*Comparator for sorting the list by roll no*/
+    public static Comparator<Formula1Driver> PositionComparator = new Comparator<Formula1Driver>() {
+
+        public int compare(Formula1Driver points1, Formula1Driver points2) {
+
+            int pointCom1 = points1.getFirstPlace();
+            int pointCom2 = points2.getFirstPlace();
+
+            /*For ascending order*/
+            //return pointCom1-pointCom2;
+
+            /*For descending order*/
+            return pointCom2-pointCom1;
+        }};
 }
