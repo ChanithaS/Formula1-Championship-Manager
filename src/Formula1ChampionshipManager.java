@@ -40,6 +40,9 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
         F12.menu();
     }
 
+    public static ArrayList<Formula1Driver> getList() {
+        return drivers;
+    }
     @Override
     public void menu() {
         String menu = "\n" +
@@ -127,6 +130,20 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
                 }
                 else {
                     AddRace();
+                }
+                break;
+
+            case "7":
+                if (drivers.isEmpty())
+                {
+                    System.out.println("|                   Please add a driver to add races                    |");
+                    menu();
+                    break;
+                }
+                else {
+                    SwingGUI swing = new SwingGUI();
+                    swing.GuiMain();
+                    menu();
                 }
                 break;
             case "99":
