@@ -30,6 +30,9 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
     public static ArrayList<Formula1Driver> getList() {
         return drivers;
     }
+    public static ArrayList<Dates> getDatesList() {
+        return dates;
+    }
     @Override
     public void menu() {
         String menu = "\n" +
@@ -455,8 +458,7 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
         }
     }
 
-    public void SingleRace()
-    {
+    public void SingleRace() {
         String alignDates = "                    | %-29s |%n";
         System.out.format("                    +-------------------------------+%n");
         System.out.format("                    |             Dates             |%n");
@@ -547,7 +549,7 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
                 driver.setPoints(noOfPoints[value - 1]);
             }
 
-
+            //assigning the drivers and the positions obtained to the arraylists
             dates.get(index).setParticipated(driver.getName());
             dates.get(index).setPosition(value);
 
@@ -736,7 +738,7 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
         System.out.format("              +-----------------------+------------------+%n");
     }
 
-    public int returnIndex(String compDate) {
+    public static int returnIndex(String compDate) {
         int valueIndex = 0;
         for (int i = 0; i < dates.size(); i++)
         {

@@ -64,7 +64,7 @@ public class Formula1Driver extends Driver implements Serializable, Comparable<F
     }
 
     /*Comparator for sorting the list by Student Name*/
-    public static Comparator<Formula1Driver> DriverNameComparator = new Comparator<Formula1Driver>() {
+    public static Comparator<Formula1Driver> DriverNameComparator = new Comparator<Formula1Driver>() {                  //https://beginnersbook.com/2013/12/java-arraylist-of-object-sort-example-comparable-and-comparator/
 
         public int compare(Formula1Driver name1, Formula1Driver name2) {
             String driverName1 = name1.getName().toUpperCase();
