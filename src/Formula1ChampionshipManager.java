@@ -1,7 +1,11 @@
 import java.io.*;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Formula1ChampionshipManager implements ChampionshipManager {
 
@@ -125,7 +129,7 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
             case "7":
                 if (drivers.isEmpty())
                 {
-                    System.out.println("|                   Please add a driver to add races                    |");
+                    System.out.println("|                  Please add a driver to view table                    |");
                     menu();
                     break;
                 }
@@ -750,9 +754,9 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
         return valueIndex;
     }
 
-    public boolean returnYorN(String compName) {
+    public static boolean returnYorN(String compName) {
         boolean result = false;
-        for (int i = 0; i < dates.size(); i++)
+        for (int i = 0; i < drivers.size(); i++)
         {
             if (drivers.get(i).getName().equals(compName))
             {

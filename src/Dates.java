@@ -31,11 +31,24 @@ public class Dates implements Serializable {
     public ArrayList<Integer> getPosition() {
         return positions;
     }
-    public void Print()
+    public String printPlayers()
     {
-        for (int i = 0; i < positions.size(); i++)
-        {
-            System.out.println(positions.get(i));
-        }
+        String players = String.valueOf(participated);
+        return players;
     }
+//    public static boolean nameHas(String name) {
+//        boolean result = false;
+//        for (int i = 0; i < participated.size(); i++)
+//        {
+//            if (participated.get(i).equals(name))
+//            {
+//                result = true;
+//            }
+//            else {
+//                result = false;
+//            }
+//        }
+//        return result;
+//    }
+
 }

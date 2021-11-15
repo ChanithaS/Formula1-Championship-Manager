@@ -80,6 +80,36 @@ public class Formula1Driver extends Driver implements Serializable, Comparable<F
     /*Comparator for sorting the list by roll no*/
     public static Comparator<Formula1Driver> PositionComparator = new Comparator<Formula1Driver>() {
 
+        public int compare(Formula1Driver pos1, Formula1Driver pos2) {
+
+            int posCom1 = pos1.getFirstPlace();
+            int posCom2 = pos2.getFirstPlace();
+
+            /*For ascending order*/
+            //return pointCom1-pointCom2;
+
+            /*For descending order*/
+            return posCom2-posCom1;
+        }};
+
+    /*Comparator for sorting the list by roll no*/
+    public static Comparator<Formula1Driver> PointsAscending = new Comparator<Formula1Driver>() {
+
+        public int compare(Formula1Driver points1, Formula1Driver points2) {
+
+            int pointCom1 = points1.getFirstPlace();
+            int pointCom2 = points2.getFirstPlace();
+
+            /*For ascending order*/
+            return pointCom1-pointCom2;
+
+            /*For descending order*/
+            //return pointCom2-pointCom1;
+        }};
+
+    /*Comparator for sorting the list by roll no*/
+    public static Comparator<Formula1Driver> PointsDescending = new Comparator<Formula1Driver>() {
+
         public int compare(Formula1Driver points1, Formula1Driver points2) {
 
             int pointCom1 = points1.getFirstPlace();
