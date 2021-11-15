@@ -3,7 +3,6 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.lang.reflect.Array;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -63,37 +62,24 @@ public class SwingGUI extends JFrame{
 
         table1.setModel(new javax.swing.table.DefaultTableModel(
                 new Object[][]{},
-                new String[]{"RACE DATES"}));
+                new String[]{"RACE DATES", "count"}));
 
         for (String date : datesArray) {
             ((DefaultTableModel) table1.getModel()).addRow(new Object[]{
                     date});
         }
     }
-    public void playerData() { //adding the drivers to the table
+    public void playerData(ArrayList<String> resDate, ArrayList<String> pos) { //adding the drivers to the table
 
         table2.setModel(new javax.swing.table.DefaultTableModel(
                 new Object[][]{},
                 new String[]{"Races", "Positions Obtained"}));
 
-        for (Formula1Driver driver : newDrivers) {
+        for (int i = 0; i < resDate.size(); i++) {
             ((DefaultTableModel) table2.getModel()).addRow(new Object[]{
-                    driver.getName(), driver.getAge(), driver.getTeam(),
-                    driver.getLocation(), driver.getNoOfRaces(), driver.getFirstPlace(), driver.getSecondPlace(), driver.getThirdPlace(), driver.getPoints()});
+                    resDate.get(i), pos.get(i)});
         }
     }
-//    public void DateTable(ArrayList<Dates> datesArray) { //adding the drivers to the table
-//
-//        table1.setModel(new javax.swing.table.DefaultTableModel(
-//                new Object[][]{},
-//                new String[]{"RACE DATES"}));
-//
-//        for (Dates date : datesArray) {
-//            ((DefaultTableModel) table1.getModel()).addRow(new Object[]{
-//                    date.getDate(), date.printPlayers()});
-//        }
-//    }
-
 
     public void panelConfig(){
         JLabel welcomeLabel = new JLabel("Welcome");
@@ -251,7 +237,7 @@ public class SwingGUI extends JFrame{
         int totalPos = ChampionshipManager.positions.length;
         for(int i = 0; i < newDrivers.size(); i++)
         {
-            int rand = randomValue(totalPos, 1);
+            int rand = randomValue(totalPos, 0);
             boolean randomBoo = false;
             while (!randomBoo)
             {
@@ -260,7 +246,7 @@ public class SwingGUI extends JFrame{
                     randomBoo = true;
                 }
                 else {
-                    rand = randomValue(10,1);
+                    rand = randomValue(totalPos, 0);
                     randomBoo = false;
                 }
             }
@@ -321,10 +307,14 @@ public class SwingGUI extends JFrame{
         addToTable();
     }
     public void SortDates() {
+        //creating a new arraylist to store the dates
         ArrayList<String> datesAll = new ArrayList<>();
+
+        //assigning the dates to datesAll arraylist
         for (int i = 0; i < newDates.size(); i++){
             datesAll.add(newDates.get(i).getDate());
         }
+        //Sorting the datesAll arraylist as newDate arraylist cannot be sorted as it also contains arraylists
         Collections.sort(datesAll, new Comparator<String>() {
             DateFormat formatCheckQ = new SimpleDateFormat("dd/MM/yyyy");
             @Override
@@ -336,33 +326,50 @@ public class SwingGUI extends JFrame{
                 }
             }
         });
+        //updating the table passing the sorted dates containing array
         DateTable(datesAll);
     }
 
     public void SearchPlayer(String name){
+        //creating 2 new arraylist to store the dates and pos of the respective player
+        ArrayList<String> datesParti = new ArrayList<>();
+        ArrayList<String> posObtained = new ArrayList<>();
+
         if (Formula1ChampionshipManager.returnYorN(name))
         {
             for (Dates newDate : newDates) {
-                if (newDate.getParticipated().contains(name))
+                if (newDate.getParticipated().contains(name.toLowerCase()))
                 {
-
-
+                    //getting the index of the player in the array and getting the same index value in positions array
+                    int index = returnIndex(name);
+                    //checking if player has participated in the race or not
+                    datesParti.add(newDate.getDate());
+                    posObtained.add(String.valueOf(newDate.getPosition().get(index)));
+//                    if (newDate.getPosition().get(index) != 0){
+//
+//                    }
                 }
             }
         }
         else {
             tab2SearchLabel.setText("No Player Found, Please enter a valid player");
         }
+        playerData(datesParti, posObtained);
     }
 
-    public int returnIndex1(String compDate) {
+    //returns the index of the specific name in participated array in Dates class
+    public int returnIndex(String name) {
         int valueIndex = 0;
         for (int i = 0; i < newDates.size(); i++)
         {
-            if (newDates.get(i).getDate().equals(compDate))
+            for (int j = 0; j < newDates.get(i).getParticipated().size(); j++)
             {
-                valueIndex = i;
+                if (newDates.get(i).getParticipated().get(j).equals(name))
+                {
+                    valueIndex = j;
+                }
             }
+
         }
         return valueIndex;
     }

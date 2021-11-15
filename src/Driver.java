@@ -17,16 +17,8 @@ public abstract class Driver implements Serializable {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getLocation() {
         return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
     }
 
     public String getTeam() {
@@ -35,10 +27,6 @@ public abstract class Driver implements Serializable {
 
     public void setTeam(String team) {
         this.team = team;
-    }
-
-    public void setAge(int age){
-        this.age = age;
     }
 
     public int getAge() {

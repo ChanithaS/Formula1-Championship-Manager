@@ -1,11 +1,7 @@
 import java.io.*;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Formula1ChampionshipManager implements ChampionshipManager {
 
@@ -16,17 +12,12 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
     Scanner sc1 = new Scanner(System.in).useDelimiter("\n");
 
     public static List<String> TeamNames = new ArrayList<>(Arrays.asList(TeamArray));
-    //public static ArrayList<String> dates = new ArrayList<>();
 
     public static int value;
     public static String driverTeam;
 
     public static void main(String[] args) {
         Save();
-//        for (int i = 0; i < dates.size(); i++){
-//            System.out.println(dates.get(i).getDate());
-//            dates.get(i).Print();
-//        }
         Formula1ChampionshipManager F12 = new Formula1ChampionshipManager();
         F12.menu();
     }
@@ -34,9 +25,11 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
     public static ArrayList<Formula1Driver> getList() {
         return drivers;
     }
+
     public static ArrayList<Dates> getDatesList() {
         return dates;
     }
+
     @Override
     public void menu() {
         String menu = "\n" +
@@ -51,6 +44,7 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
                 .concat("|                      [4] . Display Driver Statistics                  |\n")
                 .concat("|                      [5] . Display Formula 1 Driver Table             |\n")
                 .concat("|                      [6] . Add Race                                   |\n")
+                .concat("|                      [6] . Open Application                           |\n")
                 .concat("|                      [99]. Exit the Program                           |\n")
                 .concat("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n")
                 .concat("|                            Choose an Option                           |\n")
@@ -758,7 +752,7 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
         boolean result = false;
         for (int i = 0; i < drivers.size(); i++)
         {
-            if (drivers.get(i).getName().equals(compName))
+            if (drivers.get(i).getName().equalsIgnoreCase(compName))
             {
                 result = true;
             }
@@ -768,6 +762,7 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
         }
         return result;
     }
+
 
     /////////////////////////////////////// Validation /////////////////////////
     public void TableInputValidator(String sentence) {
@@ -783,8 +778,7 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
         }
     }
 
-    public void integerValidation(String test)
-    {
+    public void integerValidation(String test) {
         System.out.println(test);
         System.out.print("                             : ");
         while (!sc.hasNextInt()) {

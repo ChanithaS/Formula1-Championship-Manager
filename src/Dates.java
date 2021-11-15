@@ -5,6 +5,7 @@ public class Dates implements Serializable {
     private String date;
     private static ArrayList<String> participated = new ArrayList<>();
     private ArrayList<Integer> positions = new ArrayList<>();
+    private ArrayList<Integer> startPositions = new ArrayList<>();
 
     public Dates(String date)
     {
@@ -20,7 +21,7 @@ public class Dates implements Serializable {
     }
 
     public void setParticipated(String name){
-        participated.add(name);
+        participated.add(name.toLowerCase());
     }
     public ArrayList<String> getParticipated() {
         return participated;
@@ -31,24 +32,15 @@ public class Dates implements Serializable {
     public ArrayList<Integer> getPosition() {
         return positions;
     }
+    public void setStartPosition(int sPos){
+        startPositions.add(sPos);
+    }
+    public ArrayList<Integer> getStartPosition() {
+        return startPositions;
+    }
     public String printPlayers()
     {
         String players = String.valueOf(participated);
         return players;
     }
-//    public static boolean nameHas(String name) {
-//        boolean result = false;
-//        for (int i = 0; i < participated.size(); i++)
-//        {
-//            if (participated.get(i).equals(name))
-//            {
-//                result = true;
-//            }
-//            else {
-//                result = false;
-//            }
-//        }
-//        return result;
-//    }
-
 }
