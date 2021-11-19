@@ -13,8 +13,8 @@ import java.util.Random;
 
 public class SwingGUI extends JFrame{
 
-    public ArrayList<Formula1Driver> newDrivers = Formula1ChampionshipManager.getList();
-    public ArrayList<Dates> newDates = Formula1ChampionshipManager.getDatesList();
+    public static ArrayList<Formula1Driver> newDrivers = Formula1ChampionshipManager.getList();
+    public static ArrayList<Dates> newDates = Formula1ChampionshipManager.getDatesList();
     JTable table = new JTable();
     JTable table1 = new JTable();
     JTable table2 = new JTable();
@@ -69,15 +69,15 @@ public class SwingGUI extends JFrame{
                     date});
         }
     }
-    public void playerData(ArrayList<String> resDate, ArrayList<String> pos) { //adding the drivers to the table
+    public void playerData(ArrayList<String> resDate, ArrayList<Integer> pos) { //adding the drivers to the table
 
         table2.setModel(new javax.swing.table.DefaultTableModel(
                 new Object[][]{},
                 new String[]{"Races", "Positions Obtained"}));
 
         for (int i = 0; i < resDate.size(); i++) {
-            ((DefaultTableModel) table2.getModel()).addRow(new Object[]{
-                    resDate.get(i), pos.get(i)});
+                ((DefaultTableModel) table2.getModel()).addRow(new Object[]{
+                        resDate.get(i), pos.get(i)});
         }
     }
 
@@ -211,7 +211,7 @@ public class SwingGUI extends JFrame{
         tab2BtnSearch.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                SearchPlayer(textInput.getText());
+                SearchPlayer(textInput.getText().toLowerCase());
             }
         });
     }
@@ -295,8 +295,7 @@ public class SwingGUI extends JFrame{
             } else if (randomList.get(i) > 3 && randomList.get(i) <= 9) {
                 newDrivers.get(i).setPoints(ChampionshipManager.noOfPoints[randomList.get(i) - 1]);
             }
-            newDates.get(index).setParticipated(newDrivers.get(i).getName());
-            newDates.get(index).setPosition(randomList.get(i));
+            newDates.get(index).setPartAndPos(newDrivers.get(i).getName(), randomList.get(i));
         }
 
         randomRaceStat.setText("Random race data :");
@@ -331,47 +330,60 @@ public class SwingGUI extends JFrame{
     }
 
     public void SearchPlayer(String name){
+
+        System.out.println(returnYorNs(name));
+        for (int i = 0; i < newDates.size(); i++) {
+            System.out.println(newDates.get(i).getDate());
+            for (int j = 0; j < newDates.get(i).getParticipated().size(); j++){
+                System.out.println(newDates.get(i).ret(j));
+            }
+        }
+
         //creating 2 new arraylist to store the dates and pos of the respective player
         ArrayList<String> datesParti = new ArrayList<>();
-        ArrayList<String> posObtained = new ArrayList<>();
+        ArrayList<Integer> posObtained = new ArrayList<>();
 
-        if (Formula1ChampionshipManager.returnYorN(name))
+        if (returnYorNs(name))
         {
             for (Dates newDate : newDates) {
-                if (newDate.getParticipated().contains(name.toLowerCase()))
-                {
-                    //getting the index of the player in the array and getting the same index value in positions array
-                    int index = returnIndex(name);
-                    //checking if player has participated in the race or not
-                    datesParti.add(newDate.getDate());
-                    posObtained.add(String.valueOf(newDate.getPosition().get(index)));
-//                    if (newDate.getPosition().get(index) != 0){
-//
-//                    }
+                System.out.println(newDates.get(0).printPlayers());
+                ArrayList<String> test = newDate.getParticipated();
+                for (String s : test) {
+                    if (s.equalsIgnoreCase(name))
+                    {
+                        int index = test.indexOf(s);
+                        datesParti.add(newDate.getDate());
+                        posObtained.add(newDate.getPosition().get(index));
+                    }
                 }
             }
+            for (int i = 0; i < datesParti.size(); i++){
+                System.out.println(datesParti.get(i));
+                System.out.println(posObtained.get(i));
+            }
+            playerData(datesParti, posObtained);
         }
         else {
             tab2SearchLabel.setText("No Player Found, Please enter a valid player");
         }
-        playerData(datesParti, posObtained);
+        //playerData(datesParti, posObtained);
     }
 
-    //returns the index of the specific name in participated array in Dates class
-    public int returnIndex(String name) {
-        int valueIndex = 0;
-        for (int i = 0; i < newDates.size(); i++)
+    public boolean returnYorNs(String compareName) {
+        int count = 0;
+        boolean result = false;
+        for (int i = 0; i < newDrivers.size(); i++)
         {
-            for (int j = 0; j < newDates.get(i).getParticipated().size(); j++)
+            if (newDrivers.get(i).getName().equalsIgnoreCase(compareName))
             {
-                if (newDates.get(i).getParticipated().get(j).equals(name))
-                {
-                    valueIndex = j;
-                }
+                count++;
             }
-
         }
-        return valueIndex;
+        if (count == 1)
+        {
+            result = true;
+        }
+        return result;
     }
 
     public int randomValue(int max, int min) {

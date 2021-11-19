@@ -11,7 +11,7 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
     public Scanner sc = new Scanner(System.in);
     Scanner sc1 = new Scanner(System.in).useDelimiter("\n");
 
-    public static List<String> TeamNames = new ArrayList<>(Arrays.asList(TeamArray));
+    public static ArrayList<String> TeamNames = new ArrayList<>(Arrays.asList(TeamArray));
 
     public static int value;
     public static String driverTeam;
@@ -548,9 +548,7 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
             }
 
             //assigning the drivers and the positions obtained to the arraylists
-            dates.get(index).setParticipated(driver.getName());
-            dates.get(index).setPosition(value);
-
+            dates.get(index).setPartAndPos(driver.getName(),value);
         }
     }
 
@@ -685,6 +683,7 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
 
             drivers.clear();
             drivers = (ArrayList<Formula1Driver>) LoadFile.readObject();
+            dates.clear();
             dates = (ArrayList<Dates>) LoadFile.readObject();
 
             for(int i=0; i<drivers.size(); i++)
@@ -738,11 +737,9 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
 
     public static int returnIndex(String compDate) {
         int valueIndex = 0;
-        for (int i = 0; i < dates.size(); i++)
-        {
-            if (dates.get(i).getDate().equals(compDate))
-            {
-                valueIndex = i;
+        for (Dates date : dates) {
+            if (date.getDate().equals(compDate)){
+                valueIndex = dates.indexOf(date);
             }
         }
         return valueIndex;
