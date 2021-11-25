@@ -25,6 +25,8 @@ public class SwingGUI extends JFrame{
     JLabel randomRaceStat = new JLabel();
     JLabel tab2SearchLabel = new JLabel();
 
+    public static int winnerIndex;
+
     public void GuiMain()
     {
         SwingUtilities.invokeLater(new Runnable(){
@@ -138,16 +140,18 @@ public class SwingGUI extends JFrame{
         JButton tab2BtnSearch = new JButton("Search");
         TextField textInput = new TextField("text");
 
-        panel2.setLayout(new GridLayout(2,2,10,10));
-        panel2.add(sortPanel);
-        panel2.add(scrollPane1);
-        panel2.add(searchPanel);
-        panel2.add(scrollPane2);
+        panel2.setLayout(new BorderLayout());
+        panel2.add(scrollPane2, BorderLayout.LINE_END);
+        panel2.add(scrollPane1, BorderLayout.LINE_START);
+        JPanel topPanel = new JPanel(new GridLayout(1,2));
+        panel2.add(topPanel, BorderLayout.PAGE_START);
+        topPanel.add(sortPanel);
+        topPanel.add(searchPanel);
 
         sortPanel.add(tab2BtnSort);
-        searchPanel.add(textInput ,BorderLayout.PAGE_START);
-        searchPanel.add(tab2BtnSearch ,BorderLayout.CENTER);
-        searchPanel.add(tab2SearchLabel, BorderLayout.PAGE_END);
+        searchPanel.add(textInput, BorderLayout.CENTER);
+        searchPanel.add(tab2BtnSearch, BorderLayout.LINE_END);
+        panel2.add(tab2SearchLabel, BorderLayout.PAGE_END);
 
         //adding action listeners to the buttons respectively
         btn1.addActionListener(new ActionListener() {
@@ -193,13 +197,13 @@ public class SwingGUI extends JFrame{
         btn4.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                GenerateRandomRace();
+                GenerateRandomRace(1);
             }
         });
         btn5.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //GenerateRandomRace();
+                GenerateRandomRace(2);
             }
         });
         tab2BtnSort.addActionListener(new ActionListener() {
@@ -231,13 +235,43 @@ public class SwingGUI extends JFrame{
         addToTable();
         table.repaint();
     }
-    public void GenerateRandomRace() {
+    public void GenerateRandomRace(int function) {
         //generating random unique positions
         ArrayList<Integer> randomList = new ArrayList<Integer>();
-        int totalPos = ChampionshipManager.positions.length;
+        ArrayList<Integer> restWiningPos = new ArrayList<Integer>();
+        //assigning different values to the two functions generate random race and same with probability
+        int totalPos;
+        int min;
+        if (function == 1){
+            totalPos = ChampionshipManager.positions.length;
+            min = 0;
+        }
+        else {
+            totalPos = newDrivers.size();
+            min = 1;
+
+//            int length = newDrivers.size() -1;
+            for(int i = 0; i < newDrivers.size() -1; i++)
+            {
+                int rand1 = randomValue(newDrivers.size(), 2);
+                boolean randomWin = false;
+                while (!randomWin)
+                {
+                    if (!restWiningPos.contains(rand1)) {
+                        restWiningPos.add(rand1);
+                        randomWin = true;
+                    }
+                    else {
+                        rand1 = randomValue(newDrivers.size(), 2);
+                        randomWin = false;
+                    }
+                }
+            }
+        }
+
         for(int i = 0; i < newDrivers.size(); i++)
         {
-            int rand = randomValue(totalPos, 0);
+            int rand = randomValue(totalPos, min);
             boolean randomBoo = false;
             while (!randomBoo)
             {
@@ -246,7 +280,7 @@ public class SwingGUI extends JFrame{
                     randomBoo = true;
                 }
                 else {
-                    rand = randomValue(totalPos, 0);
+                    rand = randomValue(totalPos, min);
                     randomBoo = false;
                 }
             }
@@ -278,33 +312,75 @@ public class SwingGUI extends JFrame{
         }
         //assigning the random date to the dates object array
         newDates.add(new Dates(randomDate));
-
+        //getting the index of the arraylist of the date
         int index = Formula1ChampionshipManager.returnIndex(randomDate);
 
-        for (int i = 0; i < newDrivers.size(); i++) {
-            newDrivers.get(i).setNoOfRaces(1);
-            if (randomList.get(i) == 1) {
-                newDrivers.get(i).setFirstPlace(1);
-                newDrivers.get(i).setPoints(ChampionshipManager.noOfPoints[0]);
-            } else if (randomList.get(i) == 2) {
-                newDrivers.get(i).setSecondPlace(1);
-                newDrivers.get(i).setPoints(ChampionshipManager.noOfPoints[1]);
-            } else if (randomList.get(i) == 3) {
-                newDrivers.get(i).setThirdPlace(1);
-                newDrivers.get(i).setPoints(ChampionshipManager.noOfPoints[2]);
-            } else if (randomList.get(i) > 3 && randomList.get(i) <= 9) {
-                newDrivers.get(i).setPoints(ChampionshipManager.noOfPoints[randomList.get(i) - 1]);
-            }
-            newDates.get(index).setPartAndPos(newDrivers.get(i).getName(), randomList.get(i));
-        }
+        if (function == 1)
+        {
+            addPoints(randomList,index);
 
-        randomRaceStat.setText("Random race data :");
-        randomRaceLabel.setText(randomDate);
-        randomRaceLabel1.setText(newDates.get(index).printPlayers());
-        randomRaceLabel2.setText(String.valueOf(newDates.get(index).getPosition()));
+            randomRaceStat.setText("Random race data :");
+            randomRaceLabel.setText(randomDate);
+            randomRaceLabel1.setText(newDates.get(index).printPlayers());
+            randomRaceLabel2.setText(String.valueOf(newDates.get(index).getPosition()));
+        }
+        else
+        {
+            int randomWinPos = randomValue(10, 1);
+
+            if (randomWinPos >= 1 && randomWinPos <= 4){
+                updateWinIndex(randomList, 1);
+            }
+            if (randomWinPos >= 5 && randomWinPos <= 7){
+                updateWinIndex(randomList, 2);
+            }
+            if (randomWinPos == 8 || randomWinPos == 9){
+                int rand10Percent = randomValue(4,3);
+                updateWinIndex(randomList, rand10Percent);
+            }
+            if (randomWinPos == 10){
+                int rand2Percent = randomValue(9,5);
+                updateWinIndex(randomList, rand2Percent);
+            }
+            restWiningPos.add(winnerIndex, 1);
+            addPoints(restWiningPos, index);
+
+            randomRaceStat.setText("Random race data :");
+            randomRaceLabel.setText(String.valueOf(randomList));
+            randomRaceLabel1.setText(newDates.get(index).printPlayers());
+            randomRaceLabel2.setText(String.valueOf(newDates.get(index).getPosition()));
+        }
 
         addToTable();
     }
+
+    public void updateWinIndex(ArrayList<Integer> list, int pos){
+        for (int i = 0; i < newDrivers.size(); i++){
+            if (list.get(i) == pos)
+            {
+                winnerIndex = i;
+            }
+        }
+    }
+    public void addPoints(ArrayList<Integer> list, int index){
+        for (int i = 0; i < newDrivers.size(); i++){
+            newDrivers.get(i).setNoOfRaces(1);
+            if (list.get(i) == 1) {
+                newDrivers.get(i).setFirstPlace(1);
+                newDrivers.get(i).setPoints(ChampionshipManager.noOfPoints[0]);
+            }else if (list.get(i) == 2) {
+                newDrivers.get(i).setSecondPlace(1);
+                newDrivers.get(i).setPoints(ChampionshipManager.noOfPoints[1]);
+            } else if (list.get(i) == 3) {
+                newDrivers.get(i).setThirdPlace(1);
+                newDrivers.get(i).setPoints(ChampionshipManager.noOfPoints[2]);
+            } else if (list.get(i) > 3 && list.get(i) <= 9) {
+                newDrivers.get(i).setPoints(ChampionshipManager.noOfPoints[list.get(i) - 1]);
+            }
+            newDates.get(index).setPartAndPos(newDrivers.get(i).getName(), list.get(i));
+        }
+    }
+
     public void SortDates() {
         //creating a new arraylist to store the dates
         ArrayList<String> datesAll = new ArrayList<>();
