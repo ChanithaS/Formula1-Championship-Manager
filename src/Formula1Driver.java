@@ -63,7 +63,7 @@ public class Formula1Driver extends Driver implements Serializable, Comparable<F
         }
     }
 
-    /*Comparator for sorting the list by roll no*/
+    //Comparator for sorting positions by 1st pos in descending order
     public static Comparator<Formula1Driver> PositionComparator = new Comparator<Formula1Driver>() {                    //https://beginnersbook.com/2013/12/java-arraylist-of-object-sort-example-comparable-and-comparator/
 
         public int compare(Formula1Driver pos1, Formula1Driver pos2) {
@@ -71,40 +71,31 @@ public class Formula1Driver extends Driver implements Serializable, Comparable<F
             int posCom1 = pos1.getFirstPlace();
             int posCom2 = pos2.getFirstPlace();
 
-            /*For ascending order*/
-            //return pointCom1-pointCom2;
-
-            /*For descending order*/
+            //In descending order
             return posCom2-posCom1;
         }};
 
-    /*Comparator for sorting the list by roll no*/
+    //Comparator for sorting points  in ascending order
     public static Comparator<Formula1Driver> PointsAscending = new Comparator<Formula1Driver>() {
 
         public int compare(Formula1Driver points1, Formula1Driver points2) {
 
-            int pointCom1 = points1.getFirstPlace();
-            int pointCom2 = points2.getFirstPlace();
+            int pointCom1 = points1.getPoints();
+            int pointCom2 = points2.getPoints();
 
-            /*For ascending order*/
+            //For ascending order
             return pointCom1-pointCom2;
-
-            /*For descending order*/
-            //return pointCom2-pointCom1;
         }};
 
-    /*Comparator for sorting the list by roll no*/
+    //Comparator for sorting points  in descending order
     public static Comparator<Formula1Driver> PointsDescending = new Comparator<Formula1Driver>() {
 
         public int compare(Formula1Driver points1, Formula1Driver points2) {
 
-            int pointCom1 = points1.getFirstPlace();
-            int pointCom2 = points2.getFirstPlace();
+            int pointCom1 = points1.getPoints();
+            int pointCom2 = points2.getPoints();
 
-            /*For ascending order*/
-            //return pointCom1-pointCom2;
-
-            /*For descending order*/
+            //For descending order
             return pointCom2-pointCom1;
         }};
 }

@@ -686,10 +686,6 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
             dates.clear();
             dates = (ArrayList<Dates>) LoadFile.readObject();
 
-            for(int i=0; i<drivers.size(); i++)
-            {
-                System.out.println(drivers.get(i));
-            }
             LoadFile.close();
         } catch (IOException | ClassNotFoundException e) {
             //if any saved files cannot be found giving a error massage

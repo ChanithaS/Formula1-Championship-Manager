@@ -1,5 +1,7 @@
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,6 +13,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Random;
 
+import static javax.swing.JOptionPane.ERROR_MESSAGE;
+import static javax.swing.JOptionPane.showMessageDialog;
+
 public class SwingGUI extends JFrame{
 
     public static ArrayList<Formula1Driver> newDrivers = Formula1ChampionshipManager.getList();
@@ -18,12 +23,10 @@ public class SwingGUI extends JFrame{
     JTable table = new JTable();
     JTable table1 = new JTable();
     JTable table2 = new JTable();
+    JTable table3 = new JTable();
+    JTable table4 = new JTable();
 
-    JLabel randomRaceLabel = new JLabel();
-    JLabel randomRaceLabel1 = new JLabel();
-    JLabel randomRaceLabel2 = new JLabel();
-    JLabel randomRaceStat = new JLabel();
-    JLabel tab2SearchLabel = new JLabel();
+    private static JDialog dialogBox;
 
     public static int winnerIndex;
 
@@ -33,10 +36,9 @@ public class SwingGUI extends JFrame{
             public void run(){
 
                 addToTable();
-                //DateTable();
 
                 setLayout(new BorderLayout());
-                setSize(800, 600);
+                setSize(1000, 600);
 
                 panelConfig();
 
@@ -58,20 +60,23 @@ public class SwingGUI extends JFrame{
                     driver.getName(), driver.getAge(), driver.getTeam(),
                     driver.getLocation(), driver.getNoOfRaces(), driver.getFirstPlace(), driver.getSecondPlace(), driver.getThirdPlace(), driver.getPoints()});
         }
+
+        tableModify(table);
     }
 
-    public void DateTable(ArrayList<String> datesArray) { //adding the drivers to the table
+    public void DateTable(ArrayList<String> datesArray, ArrayList<Dates> newDates) { //adding the drivers to the table
 
         table1.setModel(new javax.swing.table.DefaultTableModel(
                 new Object[][]{},
-                new String[]{"RACE DATES", "count"}));
+                new String[]{"Race Dates", "Player Count"}));
 
-        for (String date : datesArray) {
+        for (int i = 0; i < datesArray.size(); i++) {
             ((DefaultTableModel) table1.getModel()).addRow(new Object[]{
-                    date});
+                    datesArray.get(i), newDates.get(i).getParticipated().size()});
         }
+        tableModify(table1);
     }
-    public void playerData(ArrayList<String> resDate, ArrayList<Integer> pos) { //adding the drivers to the table
+    public void playerDataTable(ArrayList<String> resDate, ArrayList<Integer> pos) { //adding the drivers to the table
 
         table2.setModel(new javax.swing.table.DefaultTableModel(
                 new Object[][]{},
@@ -81,11 +86,70 @@ public class SwingGUI extends JFrame{
                 ((DefaultTableModel) table2.getModel()).addRow(new Object[]{
                         resDate.get(i), pos.get(i)});
         }
+        tableModify(table2);
+    }
+    public void generatedRaceTable(ArrayList<String> participated, ArrayList<Integer> pos) { //adding the drivers to the table
+
+        table3.setModel(new javax.swing.table.DefaultTableModel(
+                new Object[][]{},
+                new String[]{"Driver Name", "Position Obtained"}));
+
+        for (int i = 0; i < participated.size(); i++) {
+            ((DefaultTableModel) table3.getModel()).addRow(new Object[]{
+                    participated.get(i), pos.get(i)});
+        }
+        tableModify(table3);
+    }
+
+    public void generatedRacePosTable(ArrayList<String> participated, ArrayList<Integer> startPos, ArrayList<Integer> winPos){ //adding the drivers to the table
+
+        table4.setModel(new javax.swing.table.DefaultTableModel(
+                new Object[][]{},
+                new String[]{"Driver Name","Starting Position", "Wining Position"}));
+
+        for (int i = 0; i < participated.size(); i++) {
+            ((DefaultTableModel) table4.getModel()).addRow(new Object[]{
+                    participated.get(i), startPos.get(i), winPos.get(i)});
+        }
+        tableModify(table4);
     }
 
     public void panelConfig(){
-        JLabel welcomeLabel = new JLabel("Welcome");
-        add(welcomeLabel, BorderLayout.PAGE_START);
+        //top bar//////////////////////////////////////////////////////
+        JPanel panelTop = new JPanel(new GridLayout(1,4,20,10));
+        panelTop.setBorder(new EmptyBorder(20,10,10,10));
+        add(panelTop, BorderLayout.PAGE_START);
+        JPanel searchPanel = new JPanel(new BorderLayout());
+
+        ImageIcon imageIcon = new ImageIcon(new ImageIcon(getClass().getResource("/images/Layer1.png")).getImage().getScaledInstance(100, 40, Image.SCALE_DEFAULT));
+        Image image = new ImageIcon(getClass().getResource("/images/search.png")).getImage().getScaledInstance(35, 35, Image.SCALE_DEFAULT);
+        Image imageAsc = new ImageIcon(getClass().getResource("/images/ascenWhite.png")).getImage().getScaledInstance(60, 60, Image.SCALE_DEFAULT);
+        Image imageDesc = new ImageIcon(getClass().getResource("/images/descWhite.png")).getImage().getScaledInstance(60, 60, Image.SCALE_DEFAULT);
+        Image imageGenerate = new ImageIcon(getClass().getResource("/images/RandomGen.png")).getImage().getScaledInstance(60, 60, Image.SCALE_DEFAULT);
+        Image imageGeneratePos = new ImageIcon(getClass().getResource("/images/RandomGenPos.png")).getImage().getScaledInstance(60, 60, Image.SCALE_DEFAULT);
+
+        JLabel icon = new JLabel();
+        icon.setIcon(imageIcon);
+        JLabel welcomeLabel = new JLabel("WELCOME TO F1");
+        welcomeLabel.setFont(new Font("Raleway", Font.PLAIN,30));
+
+        JButton BtnSearch = new JButton();
+        BtnSearch.setPreferredSize(new Dimension(40,40));
+        BtnSearch.setIcon(new ImageIcon(image));
+
+        TextField textInput = new TextField("text");
+        searchPanel.add(textInput, BorderLayout.CENTER);
+        searchPanel.add(BtnSearch, BorderLayout.LINE_END);
+
+        panelTop.add(icon);
+        panelTop.add(welcomeLabel);
+        panelTop.add(searchPanel);
+
+        panelTop.setBackground(Color.decode("#454545"));
+        welcomeLabel.setForeground(Color.WHITE);
+        searchPanel.setBackground(Color.decode("#454545"));
+
+        //Main tab pane //////////////////////////////////////////////////////////////
         //creating scroll panes for the two tabs
         JScrollPane scrollPane = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         //creating the two panels for the tabs
@@ -93,7 +157,8 @@ public class SwingGUI extends JFrame{
         JPanel panel2=new JPanel();
         //creating a panel with grid layout to put the buttons in page end of panel 1
         JPanel panelLeft = new JPanel(new GridLayout(5,1, 10, 10));
-        JPanel panelBottomData = new JPanel(new GridLayout(1,4, 10, 10));
+        panelLeft.setBorder(new EmptyBorder(10,10,10,10));
+        panelLeft.setBackground(Color.decode("#454545"));
 
         //creating the main tab pane and aligning it in the center
         JTabbedPane tabPane =new JTabbedPane();
@@ -101,20 +166,39 @@ public class SwingGUI extends JFrame{
         tabPane.add("F1DriverTable",panel1);
         tabPane.add("Race Data",panel2);
 
-        //creating buttons and fields for tab 1 //////////////////////////////////////////////////////
-        JTextArea textField1 = new JTextArea();
+        panel1.setBackground(Color.decode("#454545"));
+        panel2.setBackground(Color.decode("#454545"));
+        panelLeft.setBackground(Color.decode("#454545"));
+        tabPane.setBackground(Color.decode("#454545"));
+        scrollPane.setBackground(Color.decode("#454545"));
 
-        JButton btn1 = new JButton("Sort By Name");
-        JButton btn2 = new JButton("Sort By Points");
-        JButton btn3 = new JButton("Sort By No.of 1st Positions");
-        JButton btn4 = new JButton("Generate a Random Race");
-        JButton btn5 = new JButton("Generate a Random Race with positions");
+        //creating buttons and fields for tab 1 //////////////////////////////////////////////////////
+        JButton btn1 = new JButton("Points");
+        JButton btn2 = new JButton("Points");
+        JButton btn3 = new JButton("1st Pos");
+        JButton btn4 = new JButton("Race");
+        JButton btn5 = new JButton("Race/Pos");
+
+        btn1.setPreferredSize(new Dimension(70,160));
+        btn1.setIcon(new ImageIcon(imageAsc));
+        setBtnColour(btn1);
+        btn2.setPreferredSize(new Dimension(60,60));
+        btn2.setIcon(new ImageIcon(imageDesc));
+        setBtnColour(btn2);
+        btn3.setPreferredSize(new Dimension(60,60));
+        btn3.setIcon(new ImageIcon(imageAsc));
+        setBtnColour(btn3);
+        btn4.setPreferredSize(new Dimension(60,60));
+        btn4.setIcon(new ImageIcon(imageGenerate));
+        setBtnColour(btn4);
+        btn5.setPreferredSize(new Dimension(60,60));
+        btn5.setIcon(new ImageIcon(imageGeneratePos));
+        setBtnColour(btn5);
 
         //assigning layouts and panels to the 1st tab
         panel1.setLayout(new BorderLayout());
         panel1.add(scrollPane, BorderLayout.CENTER);
         panel1.add(panelLeft, BorderLayout.LINE_START);
-        panel1.add(panelBottomData, BorderLayout.PAGE_END);
 
         //assigning buttons and fields to tab1
         panelLeft.add(btn1, BorderLayout.LINE_START);
@@ -122,36 +206,17 @@ public class SwingGUI extends JFrame{
         panelLeft.add(btn3, BorderLayout.LINE_START);
         panelLeft.add(btn4, BorderLayout.LINE_START);
         panelLeft.add(btn5, BorderLayout.LINE_START);
-        panel1.add(textField1, BorderLayout.PAGE_START);
-
-        panelBottomData.add(randomRaceStat);
-        panelBottomData.add(randomRaceLabel);
-        panelBottomData.add(randomRaceLabel1);
-        panelBottomData.add(randomRaceLabel2);
-
 
         //assigning layouts and panels to the 2nd tab////////////////////////////////////////////////
         JScrollPane scrollPane1 = new JScrollPane(table1, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-        JScrollPane scrollPane2 = new JScrollPane(table2, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-        JPanel sortPanel = new JPanel();
-        JPanel searchPanel = new JPanel(new BorderLayout());
 
         JButton tab2BtnSort = new JButton("Sort Races");
-        JButton tab2BtnSearch = new JButton("Search");
-        TextField textInput = new TextField("text");
 
         panel2.setLayout(new BorderLayout());
-        panel2.add(scrollPane2, BorderLayout.LINE_END);
-        panel2.add(scrollPane1, BorderLayout.LINE_START);
-        JPanel topPanel = new JPanel(new GridLayout(1,2));
-        panel2.add(topPanel, BorderLayout.PAGE_START);
-        topPanel.add(sortPanel);
-        topPanel.add(searchPanel);
+        panel2.add(scrollPane1, BorderLayout.CENTER);
+        panel2.add(tab2BtnSort, BorderLayout.PAGE_START);
 
-        sortPanel.add(tab2BtnSort);
-        searchPanel.add(textInput, BorderLayout.CENTER);
-        searchPanel.add(tab2BtnSearch, BorderLayout.LINE_END);
-        panel2.add(tab2SearchLabel, BorderLayout.PAGE_END);
+        tab2BtnSort.setBackground(new Color(255, 255, 255, 80));
 
         //adding action listeners to the buttons respectively
         btn1.addActionListener(new ActionListener() {
@@ -160,10 +225,9 @@ public class SwingGUI extends JFrame{
                 if (raceDone())
                 {
                     SortPointsDescending();
-                    textField1.append("Welcome");
                 }
                 else {
-                    textField1.append("Please add Race data to drivers or generate a race to sort");
+                    showMessageDialog(null, "Please add Race data to drivers or generate a race to sort", "Error", ERROR_MESSAGE);
                 }
             }
         });
@@ -174,10 +238,9 @@ public class SwingGUI extends JFrame{
                 if (raceDone())
                 {
                     SortPointsAscending();
-                    textField1.append("Welcome");
                 }
                 else {
-                    textField1.append("Please add Race data to drivers or generate a race to sort");
+                    showMessageDialog(null, "Please add Race data to drivers or generate a race to sort", "Error", ERROR_MESSAGE);
                 }
             }
         });
@@ -190,7 +253,7 @@ public class SwingGUI extends JFrame{
                     SortPosition();
                 }
                 else {
-                    textField1.append("Please add Race data to drivers or generate a race to sort");
+                    showMessageDialog(null, "Please add Race data to drivers or generate a race to sort", "Error", ERROR_MESSAGE);
                 }
             }
         });
@@ -203,7 +266,13 @@ public class SwingGUI extends JFrame{
         btn5.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                GenerateRandomRace(2);
+                if (newDrivers.size() < 10){
+                    showMessageDialog(null, "Add at least 10 players for more accuracy", "Warning", JOptionPane.WARNING_MESSAGE);
+                    GenerateRandomRace(2);
+                }
+                else {
+                    GenerateRandomRace(2);
+                }
             }
         });
         tab2BtnSort.addActionListener(new ActionListener() {
@@ -212,7 +281,7 @@ public class SwingGUI extends JFrame{
                 SortDates();
             }
         });
-        tab2BtnSearch.addActionListener(new ActionListener() {
+        BtnSearch.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 SearchPlayer(textInput.getText().toLowerCase());
@@ -250,7 +319,6 @@ public class SwingGUI extends JFrame{
             totalPos = newDrivers.size();
             min = 1;
 
-//            int length = newDrivers.size() -1;
             for(int i = 0; i < newDrivers.size() -1; i++)
             {
                 int rand1 = randomValue(newDrivers.size(), 2);
@@ -263,7 +331,6 @@ public class SwingGUI extends JFrame{
                     }
                     else {
                         rand1 = randomValue(newDrivers.size(), 2);
-                        randomWin = false;
                     }
                 }
             }
@@ -281,7 +348,6 @@ public class SwingGUI extends JFrame{
                 }
                 else {
                     rand = randomValue(totalPos, min);
-                    randomBoo = false;
                 }
             }
         }
@@ -318,11 +384,8 @@ public class SwingGUI extends JFrame{
         if (function == 1)
         {
             addPoints(randomList,index);
-
-            randomRaceStat.setText("Random race data :");
-            randomRaceLabel.setText(randomDate);
-            randomRaceLabel1.setText(newDates.get(index).printPlayers());
-            randomRaceLabel2.setText(String.valueOf(newDates.get(index).getPosition()));
+            generatedRaceTable(newDates.get(index).getParticipated(), newDates.get(index).getPosition());
+            dialogBoxPop("Generated race details", "Random race data :"+randomDate, table3);
         }
         else
         {
@@ -345,12 +408,9 @@ public class SwingGUI extends JFrame{
             restWiningPos.add(winnerIndex, 1);
             addPoints(restWiningPos, index);
 
-            randomRaceStat.setText("Random race data :");
-            randomRaceLabel.setText(String.valueOf(randomList));
-            randomRaceLabel1.setText(newDates.get(index).printPlayers());
-            randomRaceLabel2.setText(String.valueOf(newDates.get(index).getPosition()));
+            generatedRacePosTable(newDates.get(index).getParticipated(), randomList, newDates.get(index).getPosition());
+            dialogBoxPop("Generated race with positions details", "Random race date :"+randomDate, table4);
         }
-
         addToTable();
     }
 
@@ -386,8 +446,8 @@ public class SwingGUI extends JFrame{
         ArrayList<String> datesAll = new ArrayList<>();
 
         //assigning the dates to datesAll arraylist
-        for (int i = 0; i < newDates.size(); i++){
-            datesAll.add(newDates.get(i).getDate());
+        for (Dates newDate : newDates) {
+            datesAll.add(newDate.getDate());
         }
         //Sorting the datesAll arraylist as newDate arraylist cannot be sorted as it also contains arraylists
         Collections.sort(datesAll, new Comparator<String>() {
@@ -402,19 +462,10 @@ public class SwingGUI extends JFrame{
             }
         });
         //updating the table passing the sorted dates containing array
-        DateTable(datesAll);
+        DateTable(datesAll, newDates);
     }
 
     public void SearchPlayer(String name){
-
-        System.out.println(returnYorNs(name));
-        for (int i = 0; i < newDates.size(); i++) {
-            System.out.println(newDates.get(i).getDate());
-            for (int j = 0; j < newDates.get(i).getParticipated().size(); j++){
-                System.out.println(newDates.get(i).ret(j));
-            }
-        }
-
         //creating 2 new arraylist to store the dates and pos of the respective player
         ArrayList<String> datesParti = new ArrayList<>();
         ArrayList<Integer> posObtained = new ArrayList<>();
@@ -422,7 +473,6 @@ public class SwingGUI extends JFrame{
         if (returnYorNs(name))
         {
             for (Dates newDate : newDates) {
-                System.out.println(newDates.get(0).printPlayers());
                 ArrayList<String> test = newDate.getParticipated();
                 for (String s : test) {
                     if (s.equalsIgnoreCase(name))
@@ -433,16 +483,12 @@ public class SwingGUI extends JFrame{
                     }
                 }
             }
-            for (int i = 0; i < datesParti.size(); i++){
-                System.out.println(datesParti.get(i));
-                System.out.println(posObtained.get(i));
-            }
-            playerData(datesParti, posObtained);
+            playerDataTable(datesParti, posObtained);
+            dialogBoxPop("Player", "Details of Player "+name+" :", table2);
         }
         else {
-            tab2SearchLabel.setText("No Player Found, Please enter a valid player");
+            showMessageDialog(null, "No Player Found, Please enter a valid player", "Error", ERROR_MESSAGE);
         }
-        //playerData(datesParti, posObtained);
     }
 
     public boolean returnYorNs(String compareName) {
@@ -486,5 +532,44 @@ public class SwingGUI extends JFrame{
         return result;
     }
 
+    public void dialogBoxPop(String title, String heading, JTable table) {                         //https://www.javatpoint.com/java-jdialog
+        JFrame f = new JFrame();
+        dialogBox = new JDialog(f, title, true);
+        dialogBox.setLayout(new BorderLayout());
+        JButton close = new JButton("Go Back");
+
+        JScrollPane scrollPane2 = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+
+        close.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                dialogBox.setVisible(false);
+            }
+        });
+
+        dialogBox.add(new JLabel(heading), BorderLayout.PAGE_START);
+        dialogBox.add(close, BorderLayout.PAGE_END);
+        dialogBox.add(scrollPane2, BorderLayout.CENTER);
+
+        dialogBox.setSize(500, 500);
+        dialogBox.setVisible(true);
+    }
+
+    public void tableModify(JTable table){
+        JTableHeader tableHeader = table.getTableHeader();
+        tableHeader.setBackground(Color.BLACK);
+        tableHeader.setForeground(Color.WHITE);
+        tableHeader.setFont(new Font("Tahoma", Font.BOLD,13));
+        table.setBackground(Color.decode("#505050"));
+        table.setForeground(Color.WHITE);
+        table.setOpaque(true);
+        table.setFillsViewportHeight(true);
+    }
+    public void setBtnColour(JButton btn) {
+        btn.setOpaque(false);
+        btn.setBorderPainted(false);
+        btn.setVerticalTextPosition(SwingConstants.BOTTOM);
+        btn.setHorizontalTextPosition(SwingConstants.CENTER);
+        btn.setForeground(Color.WHITE);
+    }
 }
 
