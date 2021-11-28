@@ -5,6 +5,8 @@ import javax.swing.table.JTableHeader;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -41,13 +43,25 @@ public class SwingGUI extends JFrame{
                 setSize(1000, 600);
 
                 panelConfig();
+                setAlwaysOnTop (true);
 
-                setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                 setLocationRelativeTo(null);
                 setVisible(true);
 
+                addWindowListener(new WindowAdapter() {                                                                 //https://stackoverflow.com/questions/16372241/run-function-on-jframe-close
+                    public void windowClosing(WindowEvent e) {
+                        System.out.println("|                  Exiting the application..........                    |");
+                        setVisible(false);
+                        //setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                        //dispose();
+                        Formula1ChampionshipManager.exitApplication();
+                    }
+                });
             }
         });
+    }
+    public static void exitCompletely(){
+        System.exit(0);
     }
     public void addToTable() { //adding the drivers to the table
 

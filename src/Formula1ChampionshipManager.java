@@ -15,10 +15,10 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
 
     public static int value;
     public static String driverTeam;
+    static Formula1ChampionshipManager F12 = new Formula1ChampionshipManager();
 
     public static void main(String[] args) {
         Save();
-        Formula1ChampionshipManager F12 = new Formula1ChampionshipManager();
         F12.menu();
     }
 
@@ -130,7 +130,7 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
                 else {
                     SwingGUI swing = new SwingGUI();
                     swing.GuiMain();
-                    menu();
+                    System.out.println("|                  Opening the application..........                    |");
                 }
                 break;
             case "99":
@@ -710,6 +710,8 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
         }
         System.out.println("                     ▀█▀.█▄█.█▀█.█▄.█.█▄▀　█▄█.█▀█.█─█                    \n" +
                 "                    ─.█.─█▀█.█▀█.█.▀█.█▀▄　─█.─█▄█.█▄█                    ");
+
+        SwingGUI.exitCompletely();
     }
 
     public boolean RaceAdded () {
@@ -756,6 +758,9 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
         return result;
     }
 
+    public static void exitApplication(){
+        F12.menu();
+    }
 
     /////////////////////////////////////// Validation /////////////////////////
     public void TableInputValidator(String sentence) {
