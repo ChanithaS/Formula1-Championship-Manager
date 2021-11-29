@@ -18,7 +18,8 @@ import java.util.Random;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
 
-public class SwingGUI extends JFrame{
+public class SwingGUI{
+    JFrame j = new JFrame();
 
     public static ArrayList<Formula1Driver> newDrivers = Formula1ChampionshipManager.getList();
     public static ArrayList<Dates> newDates = Formula1ChampionshipManager.getDatesList();
@@ -39,19 +40,19 @@ public class SwingGUI extends JFrame{
 
                 addToTable();
 
-                setLayout(new BorderLayout());
-                setSize(1000, 600);
+                j.setLayout(new BorderLayout());
+                j.setSize(1000, 600);
 
                 panelConfig();
-                setAlwaysOnTop (true);
+                j.setAlwaysOnTop (true);
 
-                setLocationRelativeTo(null);
-                setVisible(true);
+                j.setLocationRelativeTo(null);
+                j.setVisible(true);
 
-                addWindowListener(new WindowAdapter() {                                                                 //https://stackoverflow.com/questions/16372241/run-function-on-jframe-close
+                j.addWindowListener(new WindowAdapter() {                                                                 //https://stackoverflow.com/questions/16372241/run-function-on-jframe-close
                     public void windowClosing(WindowEvent e) {
                         System.out.println("|                  Exiting the application..........                    |");
-                        setVisible(false);
+                        j.setVisible(false);
                         //setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                         //dispose();
                         Formula1ChampionshipManager.exitApplication();
@@ -132,7 +133,7 @@ public class SwingGUI extends JFrame{
         //top bar//////////////////////////////////////////////////////
         JPanel panelTop = new JPanel(new GridLayout(1,4,20,10));
         panelTop.setBorder(new EmptyBorder(20,10,10,10));
-        add(panelTop, BorderLayout.PAGE_START);
+        j.add(panelTop, BorderLayout.PAGE_START);
         JPanel searchPanel = new JPanel(new BorderLayout());
 
         ImageIcon imageIcon = new ImageIcon(new ImageIcon(getClass().getResource("/images/Layer1.png")).getImage().getScaledInstance(100, 40, Image.SCALE_DEFAULT));
@@ -176,7 +177,7 @@ public class SwingGUI extends JFrame{
 
         //creating the main tab pane and aligning it in the center
         JTabbedPane tabPane =new JTabbedPane();
-        add(tabPane, BorderLayout.CENTER);
+        j.add(tabPane, BorderLayout.CENTER);
         tabPane.add("F1DriverTable",panel1);
         tabPane.add("Race Data",panel2);
 
@@ -241,7 +242,7 @@ public class SwingGUI extends JFrame{
                     SortPointsDescending();
                 }
                 else {
-                    showMessageDialog(null, "Please add Race data to drivers or generate a race to sort", "Error", ERROR_MESSAGE);
+                    showMessageDialog(j, "Please add Race data to drivers or generate a race to sort", "Error", ERROR_MESSAGE);
                 }
             }
         });
@@ -254,7 +255,7 @@ public class SwingGUI extends JFrame{
                     SortPointsAscending();
                 }
                 else {
-                    showMessageDialog(null, "Please add Race data to drivers or generate a race to sort", "Error", ERROR_MESSAGE);
+                    showMessageDialog(j, "Please add Race data to drivers or generate a race to sort", "Error", ERROR_MESSAGE);
                 }
             }
         });
@@ -267,7 +268,7 @@ public class SwingGUI extends JFrame{
                     SortPosition();
                 }
                 else {
-                    showMessageDialog(null, "Please add Race data to drivers or generate a race to sort", "Error", ERROR_MESSAGE);
+                    showMessageDialog(j, "Please add Race data to drivers or generate a race to sort", "Error", ERROR_MESSAGE);
                 }
             }
         });
@@ -281,7 +282,7 @@ public class SwingGUI extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (newDrivers.size() < 10){
-                    showMessageDialog(null, "Add at least 10 players for more accuracy", "Warning", JOptionPane.WARNING_MESSAGE);
+                    showMessageDialog(j, "Add at least 10 players for more accuracy", "Warning", JOptionPane.WARNING_MESSAGE);
                     GenerateRandomRace(2);
                 }
                 else {
@@ -501,7 +502,7 @@ public class SwingGUI extends JFrame{
             dialogBoxPop("Player", "Details of Player "+name+" :", table2);
         }
         else {
-            showMessageDialog(null, "No Player Found, Please enter a valid player", "Error", ERROR_MESSAGE);
+            showMessageDialog(j, "No Player Found, Please enter a valid player", "Error", ERROR_MESSAGE);
         }
     }
 
@@ -548,6 +549,8 @@ public class SwingGUI extends JFrame{
 
     public void dialogBoxPop(String title, String heading, JTable table) {                         //https://www.javatpoint.com/java-jdialog
         JFrame f = new JFrame();
+        f.setLocationRelativeTo(null);
+        j.setAlwaysOnTop(false);
         dialogBox = new JDialog(f, title, true);
         dialogBox.setLayout(new BorderLayout());
         JButton close = new JButton("Go Back");
