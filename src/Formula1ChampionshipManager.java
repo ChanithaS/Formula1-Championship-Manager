@@ -58,7 +58,7 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
                 .concat("|                      [4] . Display Driver Statistics                  |\n")
                 .concat("|                      [5] . Display Formula 1 Driver Table             |\n")
                 .concat("|                      [6] . Add Race                                   |\n")
-                .concat("|                      [6] . Open Application                           |\n")
+                .concat("|                      [7] . Open Application                           |\n")
                 .concat("|                      [99]. Exit the Program                           |\n")
                 .concat("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n")
                 .concat("|                            Choose an Option                           |\n")
@@ -541,7 +541,8 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
                 dateFormat.parse(date);
                 dateValid = true;
             }
-            /* Date format is invalid */ catch (ParseException e) {
+            catch (ParseException e) {
+                /* Date format is invalid */
                 System.out.println("|      "+ date + " is Invalid Date format, Please enter a valid date");
                 System.out.print("|                             : ");
                 date = sc.next();
